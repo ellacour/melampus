@@ -1,0 +1,16 @@
+{
+  "name": "@melampus/api-types",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext ts"
+  },
+  "devDependencies": {
+    "@melampus/eslint-config": "*",
+    "@melampus/config": "*",
+    "typescript": "^5.4.5"
+  }
+}
