@@ -1,0 +1,1224 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mélampus — Identité visuelle & maquettes auth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Brand */
+    --green: #0E5B45;
+    --green-deep: #07382B;
+    --green-tint: #E6F0EC;
+
+    /* Neutrals */
+    --paper: #FAFAF7;
+    --white: #FFFFFF;
+    --ink: #0F1A16;
+    --ink-soft: #5C6661;
+    --line: #E4E2DA;
+    --line-strong: #C9C7BD;
+
+    /* Status (clinical) */
+    --status-up: #117A4D;
+    --status-up-tint: #DEF0E5;
+    --status-due: #C77B0A;
+    --status-due-tint: #FAEAD0;
+    --status-over: #B3261E;
+    --status-over-tint: #F8DEDA;
+
+    /* Radius */
+    --r-sm: 4px;
+    --r-md: 8px;
+    --r-lg: 12px;
+    --r-xl: 18px;
+
+    --shadow-sm: 0 1px 2px rgba(15,26,22,.05);
+    --shadow-md: 0 4px 12px -4px rgba(15,26,22,.10);
+    --shadow-lg: 0 16px 40px -12px rgba(15,26,22,.18);
+
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4 { font-family: var(--sans); font-weight: 600; letter-spacing: -.02em; margin: 0; }
+  h1 { font-size: clamp(40px, 5vw, 64px); line-height: 1.02; letter-spacing: -.035em; font-weight: 700; }
+  h2 { font-size: 28px; line-height: 1.15; }
+  h3 { font-size: 18px; line-height: 1.3; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 96px 0 72px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .meta {
+    display: flex; gap: 12px; align-items: center;
+    color: var(--ink-soft); font-family: var(--mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: .08em;
+    margin-bottom: 32px;
+  }
+  .hero .meta::before {
+    content: ""; width: 28px; height: 1px; background: var(--ink-soft);
+  }
+  .hero p.lede {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 28px 0 0;
+    max-width: 680px;
+  }
+  .hero p.lede strong { color: var(--ink); font-weight: 500; }
+
+  /* ---------- Section ---------- */
+  section.block { padding: 96px 0; border-bottom: 1px solid var(--line); }
+  section.block .head {
+    display: grid; grid-template-columns: 220px 1fr; gap: 48px;
+    align-items: baseline; margin-bottom: 48px;
+  }
+  section.block .head .label .eyebrow { display: block; margin-bottom: 8px; }
+  section.block .head .title h2 { margin-bottom: 12px; }
+  section.block .head .title p {
+    color: var(--ink-soft); max-width: 620px; margin: 0; font-size: 15px;
+  }
+
+  /* ---------- Logo ---------- */
+  .logo-grid {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px;
+  }
+  .logo-card {
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--white);
+    padding: 40px;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 220px; position: relative;
+  }
+  .logo-card.dark { background: var(--green-deep); }
+  .logo-card.brand { background: var(--green); }
+  .logo-card .tag {
+    position: absolute; bottom: 12px; left: 14px;
+    font-family: var(--mono);
+    font-size: 10px; color: var(--ink-soft);
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  .logo-card.dark .tag, .logo-card.brand .tag { color: rgba(250,250,247,.65); }
+
+  .logo-card.span-7 { grid-column: span 7; min-height: 280px; }
+  .logo-card.span-5 { grid-column: span 5; min-height: 280px; }
+  .logo-card.span-4 { grid-column: span 4; }
+  .logo-card.span-6 { grid-column: span 6; }
+
+  /* Lockup */
+  .lockup { display: inline-flex; align-items: center; gap: 14px; }
+  .lockup .wordmark {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 36px;
+    letter-spacing: -.025em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .lockup.large .wordmark { font-size: 48px; }
+  .lockup.small .wordmark { font-size: 22px; }
+  .lockup.paper .wordmark { color: var(--paper); }
+  .lockup.green .wordmark { color: var(--green-deep); }
+
+  /* ---------- Colors ---------- */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .swatch {
+    border-radius: var(--r-md);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--white);
+  }
+  .swatch .chip {
+    height: 120px;
+    display: flex; align-items: flex-end;
+    padding: 14px;
+    color: var(--paper);
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 16px;
+  }
+  .swatch .chip.on-light { color: var(--ink); }
+  .swatch .meta-row {
+    padding: 10px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 11px; color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+  }
+  .swatch .meta-row code { color: var(--ink); }
+  .swatch .usage {
+    padding: 10px 14px; font-size: 12px; color: var(--ink-soft);
+    border-top: 1px solid var(--line);
+    line-height: 1.4;
+  }
+
+  /* ---------- Typography ---------- */
+  .typo-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .typo-card {
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 32px;
+    background: var(--white);
+  }
+  .typo-card .name {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 24px; padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .typo-card .name strong { font-size: 16px; font-weight: 600; }
+  .typo-card .name span { font-family: var(--mono); font-size: 11px; color: var(--ink-soft); }
+  .typo-card .sample-display {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 44px; line-height: 1.05; letter-spacing: -.03em;
+    color: var(--ink);
+  }
+  .typo-card .sample-body { font-size: 15px; line-height: 1.55; color: var(--ink); }
+  .typo-card .sample-body p { margin: 0 0 8px; }
+  .typo-card .sample-mono {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--paper);
+    padding: 14px 16px;
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    margin-top: 16px;
+  }
+  .typo-card .scale {
+    margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 12px 24px;
+    font-family: var(--mono); font-size: 11px; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+
+  /* ---------- UI primitives ---------- */
+  .ui-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .ui-card {
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 32px;
+    background: var(--white);
+  }
+  .ui-card h4 { margin-bottom: 18px; font-size: 14px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft);
+    font-family: var(--mono); font-weight: 500; font-size: 11px;
+  }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 11px 18px; border-radius: var(--r-sm);
+    font-family: var(--sans); font-weight: 500; font-size: 14px;
+    border: 1px solid transparent; cursor: pointer; transition: .12s ease;
+    line-height: 1;
+  }
+  .btn-primary { background: var(--green-deep); color: var(--paper); }
+  .btn-primary:hover { background: var(--ink); }
+  .btn-secondary { background: var(--white); color: var(--ink); border-color: var(--line-strong); }
+  .btn-secondary:hover { border-color: var(--ink); }
+  .btn-ghost { background: transparent; color: var(--green-deep); }
+  .btn-ghost:hover { background: var(--green-tint); }
+
+  /* Inputs */
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .field label {
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em;
+  }
+  .field .input {
+    height: 42px; padding: 0 14px;
+    border: 1px solid var(--line-strong); border-radius: var(--r-sm);
+    background: var(--white); color: var(--ink);
+    font-family: var(--sans); font-size: 14px;
+    transition: border-color .12s, box-shadow .12s;
+  }
+  .field .input:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(14,91,69,.15);
+  }
+  .field .input.error { border-color: var(--status-over); }
+  .field .help { font-size: 12px; color: var(--ink-soft); font-family: var(--sans); text-transform: none; letter-spacing: 0; }
+  .field .err { font-size: 12px; color: var(--status-over); font-family: var(--sans); text-transform: none; letter-spacing: 0; }
+
+  /* Status pills */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: var(--r-sm);
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    letter-spacing: .04em;
+  }
+  .pill.up { background: var(--status-up-tint); color: var(--status-up); }
+  .pill.due { background: var(--status-due-tint); color: var(--status-due); }
+  .pill.over { background: var(--status-over-tint); color: var(--status-over); }
+  .pill::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ---------- Mockups: web frame ---------- */
+  .frame-grid { display: grid; gap: 56px; }
+  .web-frame {
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    background: white;
+  }
+  .web-frame .titlebar {
+    height: 36px; background: var(--paper);
+    display: flex; align-items: center; padding: 0 14px; gap: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .web-frame .titlebar .dot {
+    width: 10px; height: 10px; border-radius: 50%; background: #D9D7CD;
+  }
+  .web-frame .titlebar .url {
+    margin-left: 14px;
+    font-family: var(--mono);
+    font-size: 11px; color: var(--ink-soft);
+    background: var(--white); padding: 4px 12px; border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+  }
+  .web-frame .body { display: grid; grid-template-columns: 5fr 6fr; min-height: 600px; }
+
+  /* Brand panel — clinical, not lifestyle */
+  .web-frame .brand-panel {
+    background: var(--green-deep);
+    color: var(--paper);
+    padding: 56px 48px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative; overflow: hidden;
+    /* subtle medical grid pattern */
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+    background-color: var(--green-deep);
+  }
+  .web-frame .brand-panel .brand-top { position: relative; z-index: 1; }
+  .web-frame .brand-panel .brand-bottom { position: relative; z-index: 1; }
+  .web-frame .brand-panel .panel-title {
+    font-family: var(--sans);
+    font-size: 32px; line-height: 1.15; letter-spacing: -.02em;
+    font-weight: 600;
+    color: var(--paper);
+    max-width: 380px;
+    margin-bottom: 20px;
+  }
+  .web-frame .brand-panel .panel-sub {
+    font-size: 14px; line-height: 1.55;
+    color: rgba(250,250,247,.68);
+    max-width: 380px;
+    margin: 0;
+  }
+  .web-frame .brand-panel .features {
+    display: flex; flex-direction: column; gap: 14px; margin-top: 36px;
+    border-top: 1px solid rgba(255,255,255,.12);
+    padding-top: 28px;
+  }
+  .web-frame .brand-panel .feat {
+    display: grid; grid-template-columns: 28px 1fr;
+    gap: 12px; align-items: start;
+    font-size: 13px; line-height: 1.5;
+    color: rgba(250,250,247,.85);
+  }
+  .web-frame .brand-panel .feat .num-tag {
+    font-family: var(--mono); font-size: 11px;
+    color: rgba(250,250,247,.5);
+    padding-top: 1px;
+  }
+  .web-frame .brand-panel .feat strong { color: var(--paper); font-weight: 500; }
+  .web-frame .brand-panel .trust {
+    margin-top: 32px; padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,.12);
+    display: flex; gap: 18px; align-items: center;
+    font-family: var(--mono); font-size: 10px;
+    color: rgba(250,250,247,.5);
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  .web-frame .brand-panel .trust span { display: inline-flex; gap: 6px; align-items: center; }
+  .web-frame .brand-panel .trust .dot-mark {
+    width: 5px; height: 5px; background: var(--paper); border-radius: 50%; opacity: .4;
+  }
+
+  /* Form panel */
+  .web-frame .form-panel {
+    background: var(--white);
+    padding: 56px 64px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .web-frame .form-panel .form-inner { max-width: 380px; width: 100%; margin: 0 auto; }
+  .web-frame .form-panel .step {
+    font-family: var(--mono); font-size: 11px; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: .08em;
+    margin-bottom: 12px;
+  }
+  .web-frame .form-panel h2 { margin-bottom: 6px; font-size: 26px; }
+  .web-frame .form-panel .sub { color: var(--ink-soft); margin: 0 0 32px; font-size: 14px; }
+  .web-frame .form-panel .forgot {
+    display: block; text-align: right; margin-top: -8px;
+    font-size: 13px; color: var(--green-deep);
+    text-decoration: none;
+  }
+  .web-frame .form-panel .forgot:hover { text-decoration: underline; }
+  .web-frame .form-panel .btn-primary { width: 100%; height: 46px; margin-top: 8px; }
+  .web-frame .form-panel .divider {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--ink-soft); font-family: var(--mono); font-size: 11px;
+    margin: 28px 0; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .web-frame .form-panel .divider::before,
+  .web-frame .form-panel .divider::after {
+    content: ""; flex: 1; height: 1px; background: var(--line);
+  }
+  .web-frame .form-panel .alt {
+    text-align: center; font-size: 14px; color: var(--ink-soft);
+  }
+  .web-frame .form-panel .alt a {
+    color: var(--green-deep); font-weight: 500; text-decoration: none;
+  }
+  .web-frame .form-panel .alt a:hover { text-decoration: underline; }
+
+  /* ---------- Mockups: mobile frame ---------- */
+  .mobile-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px; justify-items: center; }
+  .phone {
+    width: 380px; height: 780px;
+    border-radius: 48px;
+    background: #0F1A16;
+    padding: 14px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+  }
+  .phone-screen {
+    width: 100%; height: 100%;
+    background: var(--white);
+    border-radius: 36px;
+    overflow: hidden;
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .phone-notch {
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 28px; background: #0F1A16;
+    border-radius: 999px; z-index: 10;
+  }
+  .phone-status {
+    height: 50px; padding: 0 28px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding-bottom: 6px;
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    flex-shrink: 0;
+  }
+  .phone-status .right { display: flex; gap: 6px; align-items: center; }
+  .phone-status .right svg { width: 16px; height: 16px; }
+
+  .phone-content {
+    flex: 1; padding: 24px 28px 28px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .phone-content .top-mark {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 8px; margin-bottom: 36px;
+  }
+  .phone-content .top-mark .wordmark { font-size: 18px; font-weight: 600; letter-spacing: -.025em; }
+  .phone-content .step {
+    font-family: var(--mono); font-size: 10px; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: .08em;
+    margin-bottom: 10px;
+  }
+  .phone-content h2 { font-size: 26px; margin-bottom: 6px; letter-spacing: -.025em; }
+  .phone-content .sub { color: var(--ink-soft); font-size: 13px; margin: 0 0 28px; }
+  .phone-content .field { margin-bottom: 14px; }
+  .phone-content .field .input { height: 46px; font-size: 14px; }
+  .phone-content .btn-primary { width: 100%; height: 48px; font-size: 14px; margin-top: 8px; }
+  .phone-content .forgot {
+    text-align: right; display: block; margin-top: -6px;
+    font-size: 13px; color: var(--green-deep); text-decoration: none;
+  }
+  .phone-content .alt {
+    margin-top: auto; padding-top: 16px; text-align: center;
+    font-size: 13px; color: var(--ink-soft);
+  }
+  .phone-content .alt a { color: var(--green-deep); font-weight: 500; text-decoration: none; }
+  .phone-content .legal-row {
+    display: flex; gap: 14px; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 9px; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-top: 12px;
+  }
+  .phone-content .legal-row span { display: inline-flex; align-items: center; gap: 4px; }
+  .phone-content .home-indicator {
+    width: 130px; height: 4px; background: var(--ink); border-radius: 2px;
+    margin: 8px auto 0; opacity: .25;
+  }
+
+  /* ---------- Principles ---------- */
+  .principles {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  .principle {
+    border: 1px solid var(--line); border-radius: var(--r-md);
+    padding: 32px; background: var(--white);
+  }
+  .principle .num-mark {
+    font-family: var(--mono); font-size: 11px; color: var(--green);
+    margin-bottom: 16px; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .principle h4 { font-size: 17px; margin-bottom: 8px; font-weight: 600; }
+  .principle p { color: var(--ink-soft); margin: 0; font-size: 13.5px; line-height: 1.55; }
+
+  footer.foot {
+    padding: 48px 0;
+    text-align: center;
+    color: var(--ink-soft);
+    font-family: var(--mono); font-size: 11px;
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+  footer.foot .lockup .wordmark { font-size: 18px; }
+  footer.foot .out { margin-top: 16px; }
+
+  /* responsive */
+  @media (max-width: 980px) {
+    section.block .head { grid-template-columns: 1fr; gap: 12px; }
+    .swatch-grid { grid-template-columns: repeat(2, 1fr); }
+    .typo-grid, .ui-grid, .principles, .mobile-row { grid-template-columns: 1fr; }
+    .web-frame .body { grid-template-columns: 1fr; }
+    .web-frame .brand-panel { padding: 32px; }
+    .web-frame .form-panel { padding: 32px; }
+    .logo-card.span-7, .logo-card.span-5, .logo-card.span-4,
+    .logo-card.span-6 { grid-column: span 12; }
+    .phone { transform: scale(.85); transform-origin: top center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== HERO ========== -->
+<header class="hero">
+  <div class="container">
+    <div class="meta">Identité visuelle · v1.0 · Mai 2026</div>
+    <h1>Mélampus.</h1>
+    <p class="lede">
+      <strong>Carnet de santé animale numérique.</strong> Suivi vaccinal,
+      soins récurrents, multi-espèces — du chat au cheval. Une marque
+      pensée comme un instrument&nbsp;: précise, lisible, sans folklore animalier.
+    </p>
+  </div>
+</header>
+
+<!-- ========== 01 LOGO ========== -->
+<section class="block">
+  <div class="container">
+    <div class="head">
+      <div class="label">
+        <span class="eyebrow">01 — Logo</span>
+        <span class="num">Mark · Wordmark · Lockups</span>
+      </div>
+      <div class="title">
+        <h2>Un mark pensé comme une trace ECG.</h2>
+        <p>
+          Plaque carrée arrondie (forme d'instrument médical) contenant un
+          « M » angulaire posé sur une ligne de base. Lecture immédiate&nbsp;:
+          tracé cardiaque + initiale de la marque. Wordmark en Inter — un
+          sans-serif neutre, le standard digital health, qui évite
+          l'esthétique éditoriale au profit du clinique.
+        </p>
+      </div>
+    </div>
+
+    <div class="logo-grid">
+
+      <!-- Primary lockup, brand bg -->
+      <div class="logo-card brand span-7">
+        <span class="tag">Lockup principal — Sur fond marque</span>
+        <div class="lockup large paper">
+          <svg width="72" height="72" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Mélampus">
+            <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#FAFAF7"/>
+            <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                  fill="none" stroke="#0E5B45" stroke-width="3"
+                  stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+          <span class="wordmark">mélampus</span>
+        </div>
+      </div>
+
+      <!-- Mark only -->
+      <div class="logo-card span-5">
+        <span class="tag">Mark seul — App icon · favicon</span>
+        <svg width="140" height="140" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0E5B45"/>
+          <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                fill="none" stroke="#FAFAF7" stroke-width="3"
+                stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </div>
+
+      <!-- Wordmark only -->
+      <div class="logo-card span-6">
+        <span class="tag">Wordmark seul — En-têtes, factures, emails</span>
+        <span style="font-family: var(--sans); font-weight: 600; font-size: 56px; letter-spacing: -.03em; color: var(--ink);">mélampus</span>
+      </div>
+
+      <!-- Compact horizontal -->
+      <div class="logo-card span-6">
+        <span class="tag">Lockup compact — Header app</span>
+        <div class="lockup">
+          <svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0E5B45"/>
+            <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                  fill="none" stroke="#FAFAF7" stroke-width="3"
+                  stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+          <span class="wordmark" style="font-size: 26px;">mélampus</span>
+        </div>
+      </div>
+
+      <!-- Monochrome ink -->
+      <div class="logo-card span-4">
+        <span class="tag">Monochrome — Encre</span>
+        <svg width="100" height="100" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0F1A16"/>
+          <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                fill="none" stroke="#FAFAF7" stroke-width="3"
+                stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </div>
+
+      <!-- Outlined -->
+      <div class="logo-card span-4">
+        <span class="tag">Contour — Embossage, gravure</span>
+        <svg width="100" height="100" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="62" height="62" rx="13" ry="13" fill="none" stroke="#07382B" stroke-width="2"/>
+          <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                fill="none" stroke="#07382B" stroke-width="3"
+                stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </div>
+
+      <!-- Reverse on green -->
+      <div class="logo-card dark span-4">
+        <span class="tag">Mark — Sur fond profond</span>
+        <svg width="100" height="100" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#FAFAF7"/>
+          <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                fill="none" stroke="#0E5B45" stroke-width="3"
+                stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== 02 COULEURS ========== -->
+<section class="block">
+  <div class="container">
+    <div class="head">
+      <div class="label">
+        <span class="eyebrow">02 — Couleurs</span>
+        <span class="num">8 jetons · palette clinique</span>
+      </div>
+      <div class="title">
+        <h2>Une palette resserrée, presque monochromatique.</h2>
+        <p>
+          Une seule couleur de marque (vert profond saturé — l'idée du « blouse blanche
+          version vétérinaire »), un blanc-papier neutre, un noir-encre
+          pour le texte. Et trois statuts cliniques classiques (vert / ambre / rouge)
+          pour le suivi vaccinal. Aucune couleur décorative. Tout ce qui est en
+          couleur a une fonction informative.
+        </p>
+      </div>
+    </div>
+
+    <div class="swatch-grid">
+
+      <div class="swatch">
+        <div class="chip" style="background: #0E5B45;">Vert clinique</div>
+        <div class="meta-row"><span>--green</span><code>#0E5B45</code></div>
+        <div class="usage">Marque · accents informatifs</div>
+      </div>
+
+      <div class="swatch">
+        <div class="chip" style="background: #07382B;">Vert profond</div>
+        <div class="meta-row"><span>--green-deep</span><code>#07382B</code></div>
+        <div class="usage">CTA · liens · panneau marque</div>
+      </div>
+
+      <div class="swatch">
+        <div class="chip on-light" style="background: #FAFAF7;">Papier</div>
+        <div class="meta-row"><span>--paper</span><code>#FAFAF7</code></div>
+        <div class="usage">Arrière-plan global</div>
+      </div>
+
+      <div class="swatch">
+        <div class="chip" style="background: #0F1A16;">Encre</div>
+        <div class="meta-row"><span>--ink</span><code>#0F1A16</code></div>
+        <div class="usage">Texte principal · titres</div>
+      </div>
+
+      <div class="swatch">
+        <div class="chip" style="background: #117A4D;">Statut · à jour</div>
+        <div class="meta-row"><span>--status-up</span><code>#117A4D</code></div>
+        <div class="usage">Vaccination en règle</div>
+      </div>
+
+      <div class="swatch">
+        <div class="chip" style="background: #C77B0A;">Statut · bientôt dû</div>
+        <div class="meta-row"><span>--status-due</span><code>#C77B0A</code></div>
+        <div class="usage">Rappel à 30 jours ou moins</div>
+      </div>
+
+      <div class="swatch">
+        <div class="chip" style="background: #B3261E;">Statut · en retard</div>
+        <div class="meta-row"><span>--status-over</span><code>#B3261E</code></div>
+        <div class="usage">Vaccination dépassée</div>
+      </div>
+
+      <div class="swatch">
+        <div class="chip on-light" style="background: #E4E2DA;">Trait</div>
+        <div class="meta-row"><span>--line</span><code>#E4E2DA</code></div>
+        <div class="usage">Bordures · séparateurs</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== 03 TYPOGRAPHIE ========== -->
+<section class="block">
+  <div class="container">
+    <div class="head">
+      <div class="label">
+        <span class="eyebrow">03 — Typographie</span>
+        <span class="num">Inter + IBM Plex Mono</span>
+      </div>
+      <div class="title">
+        <h2>Une famille pour parler, une famille pour mesurer.</h2>
+        <p>
+          Inter pour tous les textes — neutre, dense, excellent en français.
+          IBM Plex Mono pour tout ce qui est donnée mesurée&nbsp;: dates, dosages,
+          IDs, libellés techniques. Cette séparation fait visuellement la
+          différence entre la prose éditoriale et l'information clinique.
+        </p>
+      </div>
+    </div>
+
+    <div class="typo-grid">
+
+      <div class="typo-card">
+        <div class="name">
+          <strong>Inter</strong>
+          <span>SANS · 400 / 500 / 600 / 700</span>
+        </div>
+        <div class="sample-display">Tornado est à jour.</div>
+        <div class="sample-body" style="margin-top: 24px;">
+          <p><strong>Vermifugation — Tornado, équin, 11 ans.</strong></p>
+          <p style="color: var(--ink-soft);">Dernière administration enregistrée le 14 février 2026. Prochain rappel calculé le 14 mai 2026 (cycle de 90 jours).</p>
+        </div>
+        <div class="scale">
+          <span>H1 · 64 / 1.05 / 700</span>
+          <span>H2 · 28 / 1.15 / 600</span>
+          <span>Body · 15 / 1.55 / 400</span>
+          <span>Small · 13 / 1.5 / 400</span>
+        </div>
+      </div>
+
+      <div class="typo-card">
+        <div class="name">
+          <strong>IBM Plex Mono</strong>
+          <span>MONO · 400 / 500</span>
+        </div>
+        <div class="sample-display" style="font-family: var(--mono); font-size: 32px;">14 / 05 / 2026</div>
+        <div class="sample-mono">
+ANIMAL_ID&nbsp;&nbsp;&nbsp;: a3f7b2c1-...<br/>
+ESPECE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: equine<br/>
+DEPARTEMENT : 31<br/>
+NEXT_DUE&nbsp;&nbsp;&nbsp;&nbsp;: 2026-05-14<br/>
+RULE_ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: VAC.EQUINE.GRIPPE_TETANOS
+        </div>
+        <div class="scale">
+          <span>Étiquettes UI · 11 majuscules</span>
+          <span>Données tabulaires · 13</span>
+          <span>Code / IDs · 12</span>
+          <span>Eyebrows · 11 / .08em</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== 04 PRIMITIVES UI ========== -->
+<section class="block">
+  <div class="container">
+    <div class="head">
+      <div class="label">
+        <span class="eyebrow">04 — Briques UI</span>
+        <span class="num">Boutons · champs · pills cliniques</span>
+      </div>
+      <div class="title">
+        <h2>Composants resserrés, fonctionnels.</h2>
+        <p>Rayons réduits (4–8px), bordures nettes, étiquettes en mono majuscule pour signaler la nature « formulaire médical ».</p>
+      </div>
+    </div>
+
+    <div class="ui-grid">
+
+      <div class="ui-card">
+        <h4>Boutons</h4>
+        <div class="row">
+          <button class="btn btn-primary">Se connecter</button>
+          <button class="btn btn-secondary">Annuler</button>
+          <button class="btn btn-ghost">Voir le détail</button>
+        </div>
+
+        <h4 style="margin-top: 28px;">Statuts vaccinaux</h4>
+        <div class="row">
+          <span class="pill up">À jour</span>
+          <span class="pill due">Dû dans 12 j</span>
+          <span class="pill over">En retard 3 j</span>
+        </div>
+      </div>
+
+      <div class="ui-card">
+        <h4>Champs de formulaire</h4>
+        <div class="field">
+          <label>Email</label>
+          <input class="input" type="email" value="marion.gobin31@gmail.com" />
+        </div>
+        <div class="field">
+          <label>Mot de passe</label>
+          <input class="input" type="password" value="••••••••••••" />
+          <span class="help">Minimum 8 caractères, dont un chiffre.</span>
+        </div>
+        <div class="field">
+          <label>Email — état d'erreur</label>
+          <input class="input error" type="email" value="marion.gobin@" />
+          <span class="err">Format d'email invalide.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== 05 MAQUETTES WEB ========== -->
+<section class="block">
+  <div class="container">
+    <div class="head">
+      <div class="label">
+        <span class="eyebrow">05 — Maquettes web</span>
+        <span class="num">Login · Register</span>
+      </div>
+      <div class="title">
+        <h2>Authentification web — registre clinique.</h2>
+        <p>
+          Panneau marque vert profond avec grille discrète (référence aux
+          formulaires médicaux), bénéfices listés en numéroté plutôt
+          qu'en prose, mention HDS / RGPD au pied. Le formulaire reste neutre,
+          étiquettes en mono majuscule.
+        </p>
+      </div>
+    </div>
+
+    <div class="frame-grid">
+
+      <!-- WEB LOGIN -->
+      <div class="web-frame">
+        <div class="titlebar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="url">app.melampus.fr / login</span>
+        </div>
+        <div class="body">
+          <aside class="brand-panel">
+            <div class="brand-top">
+              <div class="lockup small paper">
+                <svg width="36" height="36" viewBox="0 0 64 64">
+                  <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#FAFAF7"/>
+                  <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                        fill="none" stroke="#0E5B45" stroke-width="3"
+                        stroke-linecap="square" stroke-linejoin="miter"/>
+                </svg>
+                <span class="wordmark" style="font-size: 22px;">mélampus</span>
+              </div>
+            </div>
+
+            <div class="brand-bottom">
+              <h3 class="panel-title">Le carnet de santé animale, version numérique.</h3>
+              <p class="panel-sub">Suivi vaccinal et soins récurrents, calculés à partir des protocoles vétérinaires français. Multi-espèces, multi-animaux.</p>
+
+              <div class="features">
+                <div class="feat">
+                  <span class="num-tag">01</span>
+                  <span><strong>Calendrier vaccinal automatique.</strong> Règles par espèce, âge, et département.</span>
+                </div>
+                <div class="feat">
+                  <span class="num-tag">02</span>
+                  <span><strong>Soins récurrents structurés.</strong> Vermifugation, dentaire, maréchalerie.</span>
+                </div>
+                <div class="feat">
+                  <span class="num-tag">03</span>
+                  <span><strong>Synchronisation web ↔ mobile.</strong> Une donnée, deux appareils.</span>
+                </div>
+              </div>
+
+              <div class="trust">
+                <span><span class="dot-mark"></span>Hébergement HDS</span>
+                <span><span class="dot-mark"></span>Conforme RGPD</span>
+                <span><span class="dot-mark"></span>Données chiffrées</span>
+              </div>
+            </div>
+          </aside>
+
+          <main class="form-panel">
+            <div class="form-inner">
+              <div class="step">Connexion</div>
+              <h2>Identifiez-vous.</h2>
+              <p class="sub">Accédez au dossier de santé de vos animaux.</p>
+
+              <div class="field">
+                <label>Email</label>
+                <input class="input" type="email" value="marion.gobin31@gmail.com" />
+              </div>
+              <div class="field">
+                <label>Mot de passe</label>
+                <input class="input" type="password" value="••••••••••••" />
+              </div>
+
+              <a href="#" class="forgot">Mot de passe oublié&nbsp;?</a>
+
+              <button class="btn btn-primary">Se connecter</button>
+
+              <div class="divider">ou</div>
+
+              <p class="alt">Pas encore de compte&nbsp;? <a href="#">Créer un compte</a></p>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- WEB REGISTER -->
+      <div class="web-frame">
+        <div class="titlebar">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="url">app.melampus.fr / register</span>
+        </div>
+        <div class="body">
+          <aside class="brand-panel">
+            <div class="brand-top">
+              <div class="lockup small paper">
+                <svg width="36" height="36" viewBox="0 0 64 64">
+                  <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#FAFAF7"/>
+                  <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                        fill="none" stroke="#0E5B45" stroke-width="3"
+                        stroke-linecap="square" stroke-linejoin="miter"/>
+                </svg>
+                <span class="wordmark" style="font-size: 22px;">mélampus</span>
+              </div>
+            </div>
+
+            <div class="brand-bottom">
+              <h3 class="panel-title">Ouvrez le dossier numérique de vos animaux.</h3>
+              <p class="panel-sub">Trois minutes d'inscription. Aucune carte bancaire. Vos données restent vos données.</p>
+
+              <div class="features">
+                <div class="feat">
+                  <span class="num-tag">01</span>
+                  <span><strong>Données structurées dès le jour 1.</strong> Fini les notes éparpillées dans des SMS.</span>
+                </div>
+                <div class="feat">
+                  <span class="num-tag">02</span>
+                  <span><strong>Export PDF du carnet.</strong> Pour le véto, l'assurance, la frontière.</span>
+                </div>
+                <div class="feat">
+                  <span class="num-tag">03</span>
+                  <span><strong>Notifications avant échéance.</strong> 30, 7, et 0 jour.</span>
+                </div>
+              </div>
+
+              <div class="trust">
+                <span><span class="dot-mark"></span>Hébergement HDS</span>
+                <span><span class="dot-mark"></span>Conforme RGPD</span>
+                <span><span class="dot-mark"></span>Données chiffrées</span>
+              </div>
+            </div>
+          </aside>
+
+          <main class="form-panel">
+            <div class="form-inner">
+              <div class="step">Inscription · 1 / 1</div>
+              <h2>Créer un compte.</h2>
+              <p class="sub">Vous pourrez ajouter vos animaux juste après.</p>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="field">
+                  <label>Prénom</label>
+                  <input class="input" type="text" value="Marion" />
+                </div>
+                <div class="field">
+                  <label>Nom</label>
+                  <input class="input" type="text" value="Gobin" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Email</label>
+                <input class="input" type="email" value="marion.gobin31@gmail.com" />
+              </div>
+              <div class="field">
+                <label>Mot de passe</label>
+                <input class="input" type="password" value="••••••••••••" />
+                <span class="help">Au moins 8 caractères, avec un chiffre.</span>
+              </div>
+
+              <button class="btn btn-primary" style="margin-top: 16px;">Créer mon compte</button>
+
+              <p class="alt" style="margin-top: 24px;">Déjà inscrit&nbsp;? <a href="#">Se connecter</a></p>
+            </div>
+          </main>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== 06 MAQUETTES MOBILE ========== -->
+<section class="block">
+  <div class="container">
+    <div class="head">
+      <div class="label">
+        <span class="eyebrow">06 — Maquettes mobile</span>
+        <span class="num">iOS · 390×844 · Login · Register</span>
+      </div>
+      <div class="title">
+        <h2>Authentification mobile — sobre, dense, fonctionnelle.</h2>
+        <p>
+          Mark + wordmark en haut, étiquettes mono majuscule, CTA à hauteur
+          du pouce, mention HDS / RGPD en pied de page pour rappeler la
+          nature médicale du service.
+        </p>
+      </div>
+    </div>
+
+    <div class="mobile-row">
+
+      <!-- MOBILE LOGIN -->
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="phone-status">
+            <span>9:41</span>
+            <span class="right">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v3H2zm4-2h2v5H6zm4-3h2v8h-2zm4-3h2v11h-2zm4-3h2v14h-2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7 4 2.7 7 1 11c1.7 4 6 7 11 7s9.3-3 11-7c-1.7-4-6-7-11-7zm0 11.5a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"/></svg>
+              <span style="font-size: 12px;">82%</span>
+            </span>
+          </div>
+
+          <div class="phone-content">
+            <div class="top-mark">
+              <svg width="32" height="32" viewBox="0 0 64 64">
+                <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0E5B45"/>
+                <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                      fill="none" stroke="#FAFAF7" stroke-width="3"
+                      stroke-linecap="square" stroke-linejoin="miter"/>
+              </svg>
+              <span class="wordmark">mélampus</span>
+            </div>
+
+            <div class="step">Connexion</div>
+            <h2>Identifiez-vous.</h2>
+            <p class="sub">Accédez au dossier de santé de vos animaux.</p>
+
+            <div class="field">
+              <label>Email</label>
+              <input class="input" type="email" value="marion.gobin31@gmail.com" />
+            </div>
+            <div class="field">
+              <label>Mot de passe</label>
+              <input class="input" type="password" value="••••••••••••" />
+            </div>
+
+            <a href="#" class="forgot">Mot de passe oublié&nbsp;?</a>
+
+            <button class="btn btn-primary" style="margin-top: 20px;">Se connecter</button>
+
+            <p class="alt">Pas encore de compte&nbsp;? <a href="#">Créer un compte</a></p>
+
+            <div class="legal-row">
+              <span>HDS</span>
+              <span>·</span>
+              <span>RGPD</span>
+              <span>·</span>
+              <span>Chiffré</span>
+            </div>
+
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOBILE REGISTER -->
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="phone-status">
+            <span>9:41</span>
+            <span class="right">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v3H2zm4-2h2v5H6zm4-3h2v8h-2zm4-3h2v11h-2zm4-3h2v14h-2z"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4C7 4 2.7 7 1 11c1.7 4 6 7 11 7s9.3-3 11-7c-1.7-4-6-7-11-7zm0 11.5a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"/></svg>
+              <span style="font-size: 12px;">82%</span>
+            </span>
+          </div>
+
+          <div class="phone-content">
+            <div class="top-mark">
+              <svg width="32" height="32" viewBox="0 0 64 64">
+                <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0E5B45"/>
+                <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                      fill="none" stroke="#FAFAF7" stroke-width="3"
+                      stroke-linecap="square" stroke-linejoin="miter"/>
+              </svg>
+              <span class="wordmark">mélampus</span>
+            </div>
+
+            <div class="step">Inscription · 1 / 1</div>
+            <h2>Créer un compte.</h2>
+            <p class="sub">Vous pourrez ajouter vos animaux juste après.</p>
+
+            <div class="field">
+              <label>Prénom</label>
+              <input class="input" type="text" value="Marion" />
+            </div>
+            <div class="field">
+              <label>Nom</label>
+              <input class="input" type="text" value="Gobin" />
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input class="input" type="email" value="marion.gobin31@gmail.com" />
+            </div>
+            <div class="field">
+              <label>Mot de passe</label>
+              <input class="input" type="password" value="••••••••••••" />
+            </div>
+
+            <button class="btn btn-primary" style="margin-top: 12px;">Créer mon compte</button>
+
+            <p class="alt">Déjà inscrit&nbsp;? <a href="#">Se connecter</a></p>
+
+            <div class="legal-row">
+              <span>HDS</span>
+              <span>·</span>
+              <span>RGPD</span>
+              <span>·</span>
+              <span>Chiffré</span>
+            </div>
+
+            <div class="home-indicator"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== 07 PRINCIPES ========== -->
+<section class="block">
+  <div class="container">
+    <div class="head">
+      <div class="label">
+        <span class="eyebrow">07 — Ton de marque</span>
+        <span class="num">Trois principes</span>
+      </div>
+      <div class="title">
+        <h2>Comment Mélampus parle.</h2>
+        <p>Pour garder la voix cohérente entre push notifications, écrans vides, emails, et exports PDF.</p>
+      </div>
+    </div>
+
+    <div class="principles">
+      <div class="principle">
+        <div class="num-mark">01 — Précis</div>
+        <h4>Des dates, pas du « bientôt ».</h4>
+        <p>Une vaccination est dite « due le 14 mai 2026 ». Un dosage est en mg/kg. Une espèce est codée. Aucune approximation décorative — on est un outil de santé.</p>
+      </div>
+      <div class="principle">
+        <div class="num-mark">02 — Sourcé</div>
+        <h4>Chaque règle, sa référence.</h4>
+        <p>Toute recommandation vaccinale renvoie à un protocole identifié (rule_id, source, dernière révision). Si on ne sait pas, on dit qu'on ne sait pas.</p>
+      </div>
+      <div class="principle">
+        <div class="num-mark">03 — Sobre</div>
+        <h4>Sérieux, pas froid.</h4>
+        <p>Pas d'emojis pattes. Pas d'urgence dramatisée en rouge clignotant. Pas de « votre toutou » non plus — on dit Tornado. La chaleur passe par le respect de la donnée, pas par le folklore.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="container">
+    <div class="lockup" style="display: inline-flex; align-items: center; gap: 10px;">
+      <svg width="22" height="22" viewBox="0 0 64 64">
+        <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0E5B45"/>
+        <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+              fill="none" stroke="#FAFAF7" stroke-width="3"
+              stroke-linecap="square" stroke-linejoin="miter"/>
+      </svg>
+      <span class="wordmark" style="text-transform: none; letter-spacing: -.025em;">mélampus</span>
+    </div>
+    <div class="out">Identité v1.0 — direction médicale · Storybook à venir</div>
+  </div>
+</footer>
+
+</body>
+</html>

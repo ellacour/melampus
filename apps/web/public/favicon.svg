@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Mélampus — favicon (mark variant on-paper).
+  Source de vérité : /design-system. Synchronisé avec BrandMark (web)
+  et Mark (mobile). À régénérer si les tokens couleur évoluent.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-label="Mélampus" role="img">
+  <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0E5B45"/>
+  <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+        fill="none" stroke="#FAFAF7" stroke-width="3"
+        stroke-linecap="square" stroke-linejoin="miter"/>
+</svg>

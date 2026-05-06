@@ -4,6 +4,7 @@ import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
 import { AnimalsPage } from './pages/animals/AnimalsPage'
 import { DashboardLayout } from './components/layout/DashboardLayout'
+import { DesignSystemPage } from './pages/design-system/DesignSystemPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore(s => s.isAuthenticated)
@@ -16,6 +17,9 @@ export default function App() {
       {/* Public */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+
+      {/* Espace interne — protégé par mot de passe partagé d'équipe */}
+      <Route path="/design-system" element={<DesignSystemPage />} />
 
       {/* Protected */}
       <Route

@@ -12,7 +12,7 @@ export function DashboardLayout() {
   const clearTokens = useAuthStore(s => s.clearTokens)
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 dashboard">
       {/* Sidebar */}
       <aside className="w-64 bg-white shadow-sm flex flex-col">
         <div className="p-6 border-b">
