@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mélampus — Dashboard utilisateur · état vide (maquette)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #0E5B45;
+    --green-deep: #07382B;
+    --green-tint: #E6F0EC;
+
+    --paper: #FAFAF7;
+    --white: #FFFFFF;
+    --ink: #0F1A16;
+    --ink-soft: #5C6661;
+    --line: #E4E2DA;
+    --line-strong: #C9C7BD;
+
+    --status-up: #117A4D;
+    --status-up-tint: #DEF0E5;
+    --status-due: #C77B0A;
+    --status-due-tint: #FAEAD0;
+    --status-over: #B3261E;
+    --status-over-tint: #F8DEDA;
+
+    --r-sm: 4px;
+    --r-md: 8px;
+    --r-lg: 12px;
+    --r-xl: 18px;
+
+    --shadow-sm: 0 1px 2px rgba(15,26,22,.05);
+    --shadow-md: 0 4px 12px -4px rgba(15,26,22,.10);
+    --shadow-lg: 0 16px 40px -12px rgba(15,26,22,.18);
+
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 { font-family: var(--sans); font-weight: 600; letter-spacing: -.02em; margin: 0; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+
+  /* ==================== Layout ==================== */
+  .app {
+    display: grid;
+    grid-template-columns: 248px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ==================== Sidebar ==================== */
+  aside.sidebar {
+    background: var(--white);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .sidebar .brand {
+    padding: 24px 24px 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar .brand .lockup {
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .sidebar .brand .wordmark {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: -.025em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .sidebar .brand .tag {
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .sidebar nav {
+    flex: 1;
+    padding: 20px 14px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .sidebar nav .nav-section-label {
+    padding: 14px 10px 8px;
+    font-family: var(--mono);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .sidebar .nav-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 10px;
+    border-radius: var(--r-sm);
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: background .12s, color .12s;
+  }
+  .sidebar .nav-link .left {
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .sidebar .nav-link .icon {
+    width: 16px; height: 16px;
+    color: currentColor;
+    flex-shrink: 0;
+  }
+  .sidebar .nav-link:hover {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .sidebar .nav-link.is-active {
+    background: var(--green-tint);
+    color: var(--green-deep);
+    font-weight: 500;
+  }
+  .sidebar .nav-link.is-disabled {
+    opacity: .42;
+    pointer-events: none;
+  }
+  .sidebar .nav-link .count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--paper);
+    padding: 2px 7px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+  }
+  .sidebar .nav-link.is-active .count {
+    background: var(--white);
+    border-color: var(--line-strong);
+    color: var(--green-deep);
+  }
+
+  .sidebar .footer {
+    padding: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .sidebar .user-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px;
+    border-radius: var(--r-sm);
+    transition: background .12s;
+    cursor: pointer;
+  }
+  .sidebar .user-card:hover { background: var(--paper); }
+  .sidebar .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--green-deep);
+    color: var(--paper);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: .02em;
+    flex-shrink: 0;
+  }
+  .sidebar .user-meta { line-height: 1.25; min-width: 0; }
+  .sidebar .user-meta .name {
+    font-size: 13px; font-weight: 500; color: var(--ink);
+  }
+  .sidebar .user-meta .email {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sidebar .signout {
+    margin-top: 6px;
+    width: 100%;
+    text-align: left;
+    background: transparent; border: none;
+    padding: 8px 10px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-soft);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: color .12s, background .12s;
+  }
+  .sidebar .signout:hover { color: var(--status-over); background: var(--paper); }
+
+  /* ==================== Main ==================== */
+  main.canvas {
+    min-width: 0;
+    padding: 0 56px 80px;
+  }
+
+  /* Top bar */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+  }
+  .topbar .crumbs {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .topbar .crumbs strong { color: var(--ink); font-weight: 500; }
+  .topbar .crumbs .sep { color: var(--line-strong); }
+
+  .topbar .actions {
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    border: 1px solid var(--line);
+    background: var(--white);
+    border-radius: var(--r-sm);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: border-color .12s, color .12s;
+    position: relative;
+  }
+  .icon-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: var(--r-sm);
+    font-family: var(--sans);
+    font-weight: 500; font-size: 13px;
+    border: 1px solid transparent;
+    cursor: pointer; transition: .12s ease;
+    line-height: 1;
+  }
+  .btn-primary { background: var(--green-deep); color: var(--paper); }
+  .btn-primary:hover { background: var(--ink); }
+  .btn-secondary {
+    background: var(--white); color: var(--ink);
+    border-color: var(--line-strong);
+  }
+  .btn-secondary:hover { border-color: var(--ink); }
+
+  /* Page head */
+  .page-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  .page-head .eyebrow {
+    color: var(--ink-soft);
+    display: block;
+    margin-bottom: 12px;
+  }
+  .page-head h1 {
+    font-size: 36px;
+    line-height: 1.1;
+    letter-spacing: -.025em;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .page-head p.lede {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin: 0;
+    max-width: 580px;
+  }
+  .page-head .timestamp {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    text-align: right;
+    line-height: 1.6;
+  }
+  .page-head .timestamp strong {
+    color: var(--ink);
+    font-weight: 500;
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  /* ==================== Empty hero card ==================== */
+  .empty-hero {
+    background: var(--green-tint);
+    border: 1px solid rgba(14,91,69,.14);
+    border-radius: var(--r-lg);
+    padding: 48px 56px 44px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .empty-hero::after {
+    /* EKG flourish */
+    content: "";
+    position: absolute;
+    top: 36px;
+    right: 44px;
+    width: 130px;
+    height: 42px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Cpath d='M5 30 L40 30 L52 8 L72 52 L92 8 L112 30 L195 30' stroke='%230E5B45' stroke-width='2.5' fill='none' stroke-linecap='square' stroke-linejoin='miter'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: .18;
+    pointer-events: none;
+  }
+  .empty-hero .empty-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .empty-hero h2 {
+    font-size: 30px;
+    line-height: 1.15;
+    letter-spacing: -.025em;
+    font-weight: 600;
+    margin: 0 0 10px;
+    max-width: 600px;
+  }
+  .empty-hero .lede {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 0 32px;
+    max-width: 540px;
+  }
+
+  /* Features grid (3 columns) */
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .feat {
+    background: rgba(255,255,255,.55);
+    border: 1px solid rgba(14,91,69,.10);
+    border-radius: var(--r-md);
+    padding: 20px 22px 20px;
+  }
+  .feat .num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--green-deep);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: block;
+  }
+  .feat h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 6px;
+    letter-spacing: -.01em;
+  }
+  .feat p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  /* CTA row */
+  .empty-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .empty-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 46px;
+    padding: 0 22px;
+    background: var(--green-deep);
+    color: var(--paper);
+    border: 0;
+    border-radius: var(--r-sm);
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .14s, transform .14s;
+  }
+  .empty-cta:hover { background: var(--ink); }
+  .empty-cta svg { transition: transform .14s; }
+  .empty-cta:hover svg { transform: translateX(2px); }
+  .secondary-link {
+    font-size: 14px;
+    color: var(--green-deep);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .secondary-link:hover { text-decoration: underline; }
+
+  /* ==================== Trust row ==================== */
+  .trust-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    padding: 24px 0 16px;
+    border-top: 1px solid var(--line);
+    margin-top: 8px;
+  }
+  .trust-row span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .trust-row .d {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--ink-soft);
+    opacity: .45;
+  }
+
+  /* ==================== Footnote ==================== */
+  .footnote {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  /* ==================== Responsive ==================== */
+  @media (max-width: 1100px) {
+    .features { grid-template-columns: 1fr; }
+    .empty-hero { padding: 36px 32px 32px; }
+  }
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    aside.sidebar {
+      position: static;
+      height: auto;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .sidebar nav { flex-direction: row; flex-wrap: wrap; }
+    .sidebar nav .nav-section-label { display: none; }
+    main.canvas { padding: 0 24px 60px; }
+    .empty-hero { padding: 28px 22px 24px; }
+    .empty-hero h2 { font-size: 24px; }
+  }
+  @media (max-width: 600px) {
+    .page-head { grid-template-columns: 1fr; }
+    .page-head .timestamp { text-align: left; }
+    .empty-actions { flex-direction: column; align-items: stretch; }
+    .empty-cta { justify-content: center; }
+    .secondary-link { text-align: center; }
+    .trust-row { flex-wrap: wrap; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ==================== Sidebar ==================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <a href="#" class="lockup" style="text-decoration: none;">
+        <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Mélampus">
+          <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0E5B45"/>
+          <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                fill="none" stroke="#FAFAF7" stroke-width="3"
+                stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+        <span class="wordmark">mélampus</span>
+      </a>
+      <div class="tag">Carnet de santé · v1.0</div>
+    </div>
+
+    <nav>
+      <div class="nav-section-label">Espace</div>
+      <a href="#" class="nav-link is-active">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          Vue d'ensemble
+        </span>
+      </a>
+      <a href="#" class="nav-link is-disabled">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"></path>
+          </svg>
+          Mes animaux
+        </span>
+        <span class="count">00</span>
+      </a>
+      <a href="#" class="nav-link is-disabled">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Vaccinations
+        </span>
+        <span class="count">00</span>
+      </a>
+      <a href="#" class="nav-link is-disabled">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <polyline points="12 7 12 12 15 14"></polyline>
+          </svg>
+          Soins récurrents
+        </span>
+        <span class="count">00</span>
+      </a>
+      <a href="#" class="nav-link is-disabled">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+          </svg>
+          Alertes
+        </span>
+        <span class="count">00</span>
+      </a>
+
+      <div class="nav-section-label" style="margin-top: 18px;">Compte</div>
+      <a href="#" class="nav-link is-disabled">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="9" y1="13" x2="15" y2="13"></line>
+            <line x1="9" y1="17" x2="13" y2="17"></line>
+          </svg>
+          Export PDF
+        </span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.06a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.06a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          Paramètres
+        </span>
+      </a>
+    </nav>
+
+    <div class="footer">
+      <div class="user-card">
+        <span class="avatar">MG</span>
+        <div class="user-meta">
+          <div class="name">Marion Gobin</div>
+          <div class="email">marion.gobin31@gmail.com</div>
+        </div>
+      </div>
+      <button class="signout" type="button">Se déconnecter</button>
+    </div>
+  </aside>
+
+  <!-- ==================== Main canvas ==================== -->
+  <main class="canvas">
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="crumbs">
+        <span>Espace</span>
+        <span class="sep">/</span>
+        <strong>Premier pas</strong>
+      </div>
+      <div class="actions">
+        <button class="icon-btn" type="button" aria-label="Aide">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 4"></path>
+            <line x1="12" y1="17" x2="12" y2="17.01"></line>
+          </svg>
+        </button>
+        <button class="btn btn-primary" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Ajouter un animal
+        </button>
+      </div>
+    </div>
+
+    <!-- Page head -->
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Premier pas · 0 animal suivi</span>
+        <h1>Bienvenue, Marion.</h1>
+        <p class="lede">
+          Votre carnet est prêt. Il ne contient encore aucun animal —
+          ajoutez-en un pour démarrer le suivi vaccinal automatique.
+        </p>
+      </div>
+      <div class="timestamp">
+        <strong>Dimanche 10 mai 2026</strong>
+        Compte créé · à l'instant
+      </div>
+    </div>
+
+    <!-- Empty hero card -->
+    <section class="empty-hero" aria-label="Ajouter un premier animal">
+      <span class="empty-eyebrow">Premier animal</span>
+      <h2>Ouvrez le dossier de votre premier animal.</h2>
+      <p class="lede">
+        Renseignez l'espèce, l'âge et le département. Mélampus calcule le
+        calendrier vaccinal à partir des protocoles vétérinaires français.
+      </p>
+
+      <div class="features">
+        <div class="feat">
+          <span class="num">01 — Calendrier</span>
+          <h4>Vaccinal automatique.</h4>
+          <p>Règles par espèce, âge et département. Chaque recommandation renvoie à un protocole identifié.</p>
+        </div>
+        <div class="feat">
+          <span class="num">02 — Soins</span>
+          <h4>Récurrents structurés.</h4>
+          <p>Vermifugation, dentaire, maréchalerie. Cycles calculés à partir de la dernière administration.</p>
+        </div>
+        <div class="feat">
+          <span class="num">03 — Alertes</span>
+          <h4>Avant échéance.</h4>
+          <p>Notifications à 30, 7 et 0 jour. Sur le navigateur, par email, et sur l'application mobile.</p>
+        </div>
+      </div>
+
+      <div class="empty-actions">
+        <button class="empty-cta" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Ajouter mon premier animal</span>
+        </button>
+        <a href="#" class="secondary-link">Importer depuis un carnet existant →</a>
+      </div>
+    </section>
+
+    <!-- Trust row -->
+    <div class="trust-row">
+      <span>Hébergement HDS</span>
+      <span class="d"></span>
+      <span>Conforme RGPD</span>
+      <span class="d"></span>
+      <span>Données chiffrées</span>
+    </div>
+
+    <div class="footnote">Mélampus · Identité v1.0 · État initial — Maquette</div>
+
+  </main>
+
+</div>
+
+</body>
+</html>
