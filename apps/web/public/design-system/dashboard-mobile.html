@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#FAFAF7" />
+<title>Mélampus — Dashboard mobile (maquette)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #0E5B45;
+    --green-deep: #07382B;
+    --green-tint: #E6F0EC;
+
+    --paper: #FAFAF7;
+    --white: #FFFFFF;
+    --ink: #0F1A16;
+    --ink-soft: #5C6661;
+    --line: #E4E2DA;
+    --line-strong: #C9C7BD;
+
+    --status-up: #117A4D;
+    --status-up-tint: #DEF0E5;
+    --status-due: #C77B0A;
+    --status-due-tint: #FAEAD0;
+    --status-over: #B3261E;
+    --status-over-tint: #F8DEDA;
+
+    --r-sm: 4px;
+    --r-md: 8px;
+    --r-lg: 12px;
+    --r-xl: 18px;
+
+    --shadow-sm: 0 1px 2px rgba(15,26,22,.05);
+    --shadow-md: 0 4px 12px -4px rgba(15,26,22,.10);
+    --shadow-lg: 0 16px 40px -12px rgba(15,26,22,.18);
+
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ==================== Stage (desktop preview) ==================== */
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(rgba(15,26,22,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(15,26,22,.025) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+  }
+
+  /* ==================== Phone frame (desktop only) ==================== */
+  .phone {
+    width: 390px;
+    height: 820px;
+    border-radius: 48px;
+    background: #0F1A16;
+    padding: 14px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+  }
+  .phone-notch {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 28px;
+    background: #0F1A16;
+    border-radius: 999px;
+    z-index: 10;
+  }
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    background: var(--paper);
+    border-radius: 36px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .status-bar {
+    height: 50px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 28px 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .status-bar .right {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .status-bar .right svg { width: 16px; height: 16px; color: var(--ink); }
+
+  /* ==================== Top app bar ==================== */
+  .app-bar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px 12px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .icon-button {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    background: var(--white);
+    border-radius: var(--r-sm);
+    color: var(--ink-soft);
+    cursor: pointer;
+    position: relative;
+    transition: border-color .12s, color .12s;
+  }
+  .icon-button:hover { border-color: var(--ink); color: var(--ink); }
+  .icon-button .badge {
+    position: absolute;
+    top: -4px; right: -4px;
+    background: var(--status-over);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--paper);
+  }
+  .lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lockup .wordmark {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -.025em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  /* ==================== Content (scrollable) ==================== */
+  .app-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 22px 18px 28px;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    display: inline-block;
+  }
+
+  /* ---- Greeting ---- */
+  .greeting {
+    margin-bottom: 24px;
+  }
+  .greeting .eyebrow { color: var(--ink-soft); margin-bottom: 8px; }
+  .greeting h1 {
+    font-size: 30px;
+    line-height: 1.05;
+    letter-spacing: -.025em;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .greeting .lede {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  /* ---- Chronologie mobile (carte unique, mini-liste) ---- */
+  .apercu {
+    background: var(--green-tint);
+    border: 1px solid rgba(14,91,69,.14);
+    border-radius: var(--r-lg);
+    padding: 6px 18px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .upcoming-row {
+    display: grid;
+    grid-template-columns: 12px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(14,91,69,.18);
+  }
+  .upcoming-row:last-child { border-bottom: 0; padding-bottom: 6px; }
+  .upcoming-row .marker {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .upcoming-row.due .marker { background: var(--status-due); }
+  .upcoming-row.over .marker { background: var(--status-over); }
+  .upcoming-row .info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .upcoming-row .protocol {
+    font-size: 13.5px;
+    color: var(--ink);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .upcoming-row .meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .04em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+  .upcoming-row .when {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .upcoming-row .when .sub {
+    display: block;
+    font-size: 9.5px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-top: 2px;
+  }
+  .upcoming-row.over .when .sub { color: var(--status-over); }
+  .upcoming-row.due .when .sub { color: var(--status-due); }
+
+  /* ---- Section header ---- */
+  .section-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+  .section-head h2 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+  .section-head .count-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    background: var(--paper);
+    padding: 3px 7px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+  }
+  .section-head .link {
+    font-size: 12.5px;
+    color: var(--green-deep);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  section.block { margin-bottom: 28px; }
+
+  /* ---- Animals — full-width cards ---- */
+  .animals { display: flex; flex-direction: column; gap: 12px; }
+  .animal-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    transition: border-color .12s;
+  }
+  .animal-card:active { border-color: var(--line-strong); }
+  .animal-card .header {
+    padding: 14px 16px 12px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .animal-card .identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+  .animal-card .portrait {
+    width: 40px; height: 40px;
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .animal-card .portrait svg { width: 20px; height: 20px; color: var(--green-deep); }
+  .animal-card .name {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -.012em;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .animal-card .species-line {
+    margin-top: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .animal-card .species-line .dot { margin: 0 4px; opacity: .55; }
+
+  .animal-card .body {
+    border-top: 1px solid var(--line);
+    padding: 12px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+  }
+  .animal-card .stat .stat-label {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 3px;
+  }
+  .animal-card .stat .stat-value {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .animal-card .stat .stat-value.muted { color: var(--ink-soft); }
+
+  .animal-card .footer {
+    border-top: 1px solid var(--line);
+    background: var(--paper);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    letter-spacing: .04em;
+  }
+  .animal-card .footer strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* Pills */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: var(--r-sm);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  .pill::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .pill.up { background: var(--status-up-tint); color: var(--status-up); }
+  .pill.due { background: var(--status-due-tint); color: var(--status-due); }
+  .pill.over { background: var(--status-over-tint); color: var(--status-over); }
+
+  /* ---- Schedule list ---- */
+  .schedule {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .schedule-row {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .schedule-row:last-child { border-bottom: 0; }
+  .schedule-row .marker {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink-soft);
+    margin-left: 3px;
+  }
+  .schedule-row.over .marker { background: var(--status-over); }
+  .schedule-row.due .marker { background: var(--status-due); }
+  .schedule-row .info { min-width: 0; }
+  .schedule-row .protocol {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .schedule-row .protocol .meta {
+    display: block;
+    margin-top: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-weight: 400;
+  }
+  .schedule-row .when {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .schedule-row .when .sub {
+    display: block;
+    margin-top: 3px;
+    font-size: 9.5px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .schedule-row.over .when .sub { color: var(--status-over); }
+  .schedule-row.due .when .sub { color: var(--status-due); }
+
+  .schedule-foot {
+    padding: 12px 16px;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  .schedule-foot a {
+    font-size: 12.5px;
+    color: var(--green-deep);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  /* ---- Tab bar (bottom) ---- */
+  .tab-bar {
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: var(--white);
+    border-top: 1px solid var(--line);
+    padding: 8px 4px 6px;
+  }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 2px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    transition: color .12s;
+    position: relative;
+  }
+  .tab svg { width: 20px; height: 20px; }
+  .tab.is-active { color: var(--green-deep); }
+  .tab.is-active::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 2px;
+    background: var(--green-deep);
+    border-radius: 0 0 2px 2px;
+  }
+
+  .home-indicator {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    padding: 6px 0 8px;
+    background: var(--white);
+  }
+  .home-indicator span {
+    width: 130px;
+    height: 4px;
+    background: var(--ink);
+    border-radius: 2px;
+    opacity: .25;
+  }
+
+  .footnote {
+    margin-top: 16px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-soft);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  /* ==================== Real mobile (< 600px) ==================== */
+  @media (max-width: 600px) {
+    .stage {
+      padding: 0;
+      background: var(--paper);
+      background-image: none;
+      align-items: stretch;
+      display: block;
+      min-height: 100vh;
+    }
+    .phone {
+      width: 100%;
+      height: auto;
+      min-height: 100vh;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      background: var(--paper);
+    }
+    .phone-notch { display: none; }
+    .phone-screen {
+      border-radius: 0;
+      min-height: 100vh;
+      height: auto;
+    }
+    .status-bar { display: none; }
+    .home-indicator { display: none; }
+    .app-bar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .tab-bar {
+      position: sticky;
+      bottom: 0;
+      padding-bottom: calc(6px + env(safe-area-inset-bottom));
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="phone" role="presentation">
+    <div class="phone-notch"></div>
+
+    <div class="phone-screen">
+
+      <!-- Status bar (preview only) -->
+      <div class="status-bar">
+        <span>9:41</span>
+        <span class="right">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 17h2v3H2zm4-2h2v5H6zm4-3h2v8h-2zm4-3h2v11h-2zm4-3h2v14h-2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 8h16v8H2zM19 10v4l3 1v-6z"/></svg>
+          <span style="font-size: 12px;">82%</span>
+        </span>
+      </div>
+
+      <!-- App bar -->
+      <header class="app-bar">
+        <button class="icon-button" type="button" aria-label="Menu">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="lockup">
+          <svg width="22" height="22" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Mélampus">
+            <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0E5B45"/>
+            <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                  fill="none" stroke="#FAFAF7" stroke-width="3"
+                  stroke-linecap="square" stroke-linejoin="miter"/>
+          </svg>
+          <span class="wordmark">mélampus</span>
+        </div>
+        <button class="icon-button" type="button" aria-label="Alertes">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+          </svg>
+          <span class="badge">3</span>
+        </button>
+      </header>
+
+      <!-- Scrollable content -->
+      <main class="app-content">
+
+        <!-- Greeting -->
+        <section class="greeting">
+          <span class="eyebrow">Dimanche 10 mai</span>
+          <h1>Bonjour Marion.</h1>
+          <p class="lede">
+            Voici l'essentiel pour cette semaine.
+          </p>
+        </section>
+
+        <!-- Chronologie clinique -->
+        <section class="apercu" aria-label="Chronologie clinique">
+          <div class="upcoming-row over">
+            <span class="marker"></span>
+            <div class="info">
+              <div class="protocol">Rage</div>
+              <div class="meta">Houba · Canin</div>
+            </div>
+            <div class="when">
+              28 / 04
+              <span class="sub">− 12 j</span>
+            </div>
+          </div>
+
+          <div class="upcoming-row due">
+            <span class="marker"></span>
+            <div class="info">
+              <div class="protocol">Vermifugation</div>
+              <div class="meta">Tornado · Équin</div>
+            </div>
+            <div class="when">
+              14 / 05
+              <span class="sub">+ 4 j</span>
+            </div>
+          </div>
+
+          <div class="upcoming-row due">
+            <span class="marker"></span>
+            <div class="info">
+              <div class="protocol">Grippe-Tétanos</div>
+              <div class="meta">Tornado · Équin</div>
+            </div>
+            <div class="when">
+              28 / 05
+              <span class="sub">+ 18 j</span>
+            </div>
+          </div>
+
+          <div class="upcoming-row due">
+            <span class="marker"></span>
+            <div class="info">
+              <div class="protocol">Leucose féline</div>
+              <div class="meta">Pixel · Félin</div>
+            </div>
+            <div class="when">
+              06 / 06
+              <span class="sub">+ 27 j</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Échéances à venir -->
+        <section class="block">
+          <div class="section-head">
+            <h2>Échéances</h2>
+            <span class="count-badge">04 · 30 j</span>
+          </div>
+
+          <div class="schedule">
+            <div class="schedule-row over">
+              <span class="marker"></span>
+              <div class="info">
+                <div class="protocol">
+                  Rage · CHPPiL+R
+                  <span class="meta">Houba · VAC.CANINE.RAGE_2025</span>
+                </div>
+              </div>
+              <div class="when">
+                28 / 04
+                <span class="sub">− 12 j</span>
+              </div>
+            </div>
+
+            <div class="schedule-row due">
+              <span class="marker"></span>
+              <div class="info">
+                <div class="protocol">
+                  Vermifugation
+                  <span class="meta">Tornado · CARE.EQUINE.Q90</span>
+                </div>
+              </div>
+              <div class="when">
+                14 / 05
+                <span class="sub">+ 4 j</span>
+              </div>
+            </div>
+
+            <div class="schedule-row due">
+              <span class="marker"></span>
+              <div class="info">
+                <div class="protocol">
+                  Grippe + Tétanos
+                  <span class="meta">Tornado · VAC.EQUINE.GT</span>
+                </div>
+              </div>
+              <div class="when">
+                28 / 05
+                <span class="sub">+ 18 j</span>
+              </div>
+            </div>
+
+            <div class="schedule-row due">
+              <span class="marker"></span>
+              <div class="info">
+                <div class="protocol">
+                  Leucose féline
+                  <span class="meta">Pixel · VAC.FELINE.LEUC</span>
+                </div>
+              </div>
+              <div class="when">
+                06 / 06
+                <span class="sub">+ 27 j</span>
+              </div>
+            </div>
+
+            <div class="schedule-foot">
+              <a href="#">Voir le calendrier complet →</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mes animaux -->
+        <section class="block">
+          <div class="section-head">
+            <h2>Mes animaux</h2>
+            <a class="link" href="#">Voir tout →</a>
+          </div>
+
+          <div class="animals">
+
+            <!-- Tornado · DUE -->
+            <article class="animal-card">
+              <div class="header">
+                <div class="identity">
+                  <div class="portrait">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 16c0-3 2-5 5-5h2c2 0 4 2 4 4v0a3 3 0 0 1-3 3H8"></path>
+                      <path d="M19 7l-2 2-2-2-1 2 2 4"></path>
+                      <path d="M14 13l-1 5"></path>
+                      <path d="M10 18v3"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="name">Tornado</div>
+                    <div class="species-line">Équin <span class="dot">·</span> 11 ans <span class="dot">·</span> Hongre</div>
+                  </div>
+                </div>
+                <span class="pill due">Dû dans 4 j</span>
+              </div>
+              <div class="body">
+                <div class="stat">
+                  <div class="stat-label">Dernière admin.</div>
+                  <div class="stat-value">14 / 02 / 2026</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">Prochaine</div>
+                  <div class="stat-value">14 / 05 / 2026</div>
+                </div>
+              </div>
+              <div class="footer">
+                <span>Suivant <strong>· Vermifugation</strong></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </article>
+
+            <!-- Houba · OVER -->
+            <article class="animal-card">
+              <div class="header">
+                <div class="identity">
+                  <div class="portrait">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M10 5l-2 4 4 1 4-1-2-4"></path>
+                      <path d="M5 10c-1 1-2 3-2 5 0 3 2 5 5 5h8c3 0 5-2 5-5 0-2-1-4-2-5"></path>
+                      <circle cx="9" cy="14" r=".7" fill="currentColor"></circle>
+                      <circle cx="15" cy="14" r=".7" fill="currentColor"></circle>
+                      <path d="M11 17h2"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="name">Houba</div>
+                    <div class="species-line">Canin <span class="dot">·</span> 7 ans <span class="dot">·</span> Border collie</div>
+                  </div>
+                </div>
+                <span class="pill over">Retard 12 j</span>
+              </div>
+              <div class="body">
+                <div class="stat">
+                  <div class="stat-label">Dernière admin.</div>
+                  <div class="stat-value">28 / 04 / 2025</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">Échéance dépassée</div>
+                  <div class="stat-value">28 / 04 / 2026</div>
+                </div>
+              </div>
+              <div class="footer">
+                <span>À traiter <strong>· Rage</strong></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </article>
+
+            <!-- Filou · UP -->
+            <article class="animal-card">
+              <div class="header">
+                <div class="identity">
+                  <div class="portrait">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 4l3 5"></path>
+                      <path d="M19 4l-3 5"></path>
+                      <path d="M5 9c-1 1-1.5 3-1.5 5 0 3 2.5 6 8.5 6s8.5-3 8.5-6c0-2-.5-4-1.5-5"></path>
+                      <circle cx="9.5" cy="13" r=".7" fill="currentColor"></circle>
+                      <circle cx="14.5" cy="13" r=".7" fill="currentColor"></circle>
+                      <path d="M11 16h2"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="name">Filou</div>
+                    <div class="species-line">Félin <span class="dot">·</span> 4 ans <span class="dot">·</span> Européen</div>
+                  </div>
+                </div>
+                <span class="pill up">À jour</span>
+              </div>
+              <div class="body">
+                <div class="stat">
+                  <div class="stat-label">Dernière admin.</div>
+                  <div class="stat-value">02 / 03 / 2026</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">Prochaine</div>
+                  <div class="stat-value muted">02 / 03 / 2027</div>
+                </div>
+              </div>
+              <div class="footer">
+                <span>Aucune action requise</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </article>
+
+            <!-- Pixel · UP -->
+            <article class="animal-card">
+              <div class="header">
+                <div class="identity">
+                  <div class="portrait">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M5 4l3 5"></path>
+                      <path d="M19 4l-3 5"></path>
+                      <path d="M5 9c-1 1-1.5 3-1.5 5 0 3 2.5 6 8.5 6s8.5-3 8.5-6c0-2-.5-4-1.5-5"></path>
+                      <circle cx="9.5" cy="13" r=".7" fill="currentColor"></circle>
+                      <circle cx="14.5" cy="13" r=".7" fill="currentColor"></circle>
+                      <path d="M11 16h2"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="name">Pixel</div>
+                    <div class="species-line">Félin <span class="dot">·</span> 9 ans <span class="dot">·</span> Persan</div>
+                  </div>
+                </div>
+                <span class="pill up">À jour</span>
+              </div>
+              <div class="body">
+                <div class="stat">
+                  <div class="stat-label">Dernière admin.</div>
+                  <div class="stat-value">17 / 04 / 2026</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">Prochaine</div>
+                  <div class="stat-value">06 / 06 / 2026</div>
+                </div>
+              </div>
+              <div class="footer">
+                <span>Suivant <strong>· Leucose</strong></span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <div class="footnote">HDS · RGPD · Données chiffrées</div>
+
+      </main>
+
+      <!-- Tab bar -->
+      <nav class="tab-bar" aria-label="Navigation principale">
+        <a href="#" class="tab is-active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          Aperçu
+        </a>
+        <a href="#" class="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 4.5C7 6 6 8 6 11c0 2 1 3 3 3s3-1 3-3c0-3-1-5-3-6.5z"></path>
+            <path d="M15 4.5C17 6 18 8 18 11c0 2-1 3-3 3s-3-1-3-3c0-3 1-5 3-6.5z"></path>
+            <path d="M5 16c-1 1-1 2-1 3 0 1 1 2 2 2h12c1 0 2-1 2-2 0-1 0-2-1-3"></path>
+          </svg>
+          Animaux
+        </a>
+        <a href="#" class="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Calendrier
+        </a>
+        <a href="#" class="tab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Profil
+        </a>
+      </nav>
+
+      <!-- Home indicator -->
+      <div class="home-indicator"><span></span></div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
