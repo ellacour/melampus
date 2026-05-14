@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mélampus — Dashboard utilisateur (maquette)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Brand */
+    --green: #0E5B45;
+    --green-deep: #07382B;
+    --green-tint: #E6F0EC;
+
+    /* Neutrals */
+    --paper: #FAFAF7;
+    --white: #FFFFFF;
+    --ink: #0F1A16;
+    --ink-soft: #5C6661;
+    --line: #E4E2DA;
+    --line-strong: #C9C7BD;
+
+    /* Status (clinical) */
+    --status-up: #117A4D;
+    --status-up-tint: #DEF0E5;
+    --status-due: #C77B0A;
+    --status-due-tint: #FAEAD0;
+    --status-over: #B3261E;
+    --status-over-tint: #F8DEDA;
+
+    /* Radius */
+    --r-sm: 4px;
+    --r-md: 8px;
+    --r-lg: 12px;
+    --r-xl: 18px;
+
+    --shadow-sm: 0 1px 2px rgba(15,26,22,.05);
+    --shadow-md: 0 4px 12px -4px rgba(15,26,22,.10);
+    --shadow-lg: 0 16px 40px -12px rgba(15,26,22,.18);
+
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4 { font-family: var(--sans); font-weight: 600; letter-spacing: -.02em; margin: 0; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  /* ==================== Layout ==================== */
+  .app {
+    display: grid;
+    grid-template-columns: 248px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ==================== Sidebar ==================== */
+  aside.sidebar {
+    background: var(--white);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .sidebar .brand {
+    padding: 24px 24px 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar .brand .lockup {
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .sidebar .brand .wordmark {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: -.025em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .sidebar .brand .tag {
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .sidebar nav {
+    flex: 1;
+    padding: 20px 14px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .sidebar nav .nav-section-label {
+    padding: 14px 10px 8px;
+    font-family: var(--mono);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .sidebar .nav-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 10px;
+    border-radius: var(--r-sm);
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: background .12s, color .12s;
+  }
+  .sidebar .nav-link .left {
+    display: inline-flex; align-items: center; gap: 12px;
+  }
+  .sidebar .nav-link .icon {
+    width: 16px; height: 16px;
+    color: currentColor;
+    flex-shrink: 0;
+  }
+  .sidebar .nav-link:hover {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .sidebar .nav-link.is-active {
+    background: var(--green-tint);
+    color: var(--green-deep);
+    font-weight: 500;
+  }
+  .sidebar .nav-link .count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--paper);
+    padding: 2px 7px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+  }
+  .sidebar .nav-link.is-active .count {
+    background: var(--white);
+    border-color: var(--line-strong);
+    color: var(--green-deep);
+  }
+  .sidebar .nav-link .count.alert {
+    color: var(--status-over);
+    background: var(--status-over-tint);
+    border-color: transparent;
+  }
+
+  .sidebar .footer {
+    padding: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .sidebar .user-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px;
+    border-radius: var(--r-sm);
+    transition: background .12s;
+    cursor: pointer;
+  }
+  .sidebar .user-card:hover { background: var(--paper); }
+  .sidebar .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--green-deep);
+    color: var(--paper);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: .02em;
+    flex-shrink: 0;
+  }
+  .sidebar .user-meta { line-height: 1.25; min-width: 0; }
+  .sidebar .user-meta .name {
+    font-size: 13px; font-weight: 500; color: var(--ink);
+  }
+  .sidebar .user-meta .email {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sidebar .signout {
+    margin-top: 6px;
+    width: 100%;
+    text-align: left;
+    background: transparent; border: none;
+    padding: 8px 10px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-soft);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    transition: color .12s, background .12s;
+  }
+  .sidebar .signout:hover { color: var(--status-over); background: var(--paper); }
+
+  /* ==================== Main ==================== */
+  main.canvas {
+    min-width: 0;
+    padding: 0 56px 80px;
+  }
+
+  /* ---- Top bar ---- */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+  }
+  .topbar .crumbs {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .topbar .crumbs strong { color: var(--ink); font-weight: 500; }
+  .topbar .crumbs .sep { color: var(--line-strong); }
+
+  .topbar .actions {
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    border: 1px solid var(--line);
+    background: var(--white);
+    border-radius: var(--r-sm);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: border-color .12s, color .12s;
+    position: relative;
+  }
+  .icon-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .icon-btn .badge {
+    position: absolute;
+    top: -4px; right: -4px;
+    background: var(--status-over);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 10px; font-weight: 500;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 2px solid var(--paper);
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: var(--r-sm);
+    font-family: var(--sans);
+    font-weight: 500; font-size: 13px;
+    border: 1px solid transparent;
+    cursor: pointer; transition: .12s ease;
+    line-height: 1;
+  }
+  .btn-primary { background: var(--green-deep); color: var(--paper); }
+  .btn-primary:hover { background: var(--ink); }
+  .btn-secondary {
+    background: var(--white); color: var(--ink);
+    border-color: var(--line-strong);
+  }
+  .btn-secondary:hover { border-color: var(--ink); }
+
+  /* ---- Hero ---- */
+  .page-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  .page-head .eyebrow { display: block; margin-bottom: 12px; }
+  .page-head h1 {
+    font-size: 36px;
+    line-height: 1.1;
+    letter-spacing: -.025em;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .page-head p.lede {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin: 0;
+    max-width: 580px;
+  }
+  .page-head .timestamp {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    text-align: right;
+    line-height: 1.6;
+  }
+  .page-head .timestamp strong {
+    color: var(--ink);
+    font-weight: 500;
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  /* ---- Chronologie clinique (single card) ---- */
+  .apercu { margin-bottom: 56px; }
+  .apercu-card {
+    background: var(--green-tint);
+    border-radius: var(--r-lg);
+    border: 1px solid rgba(14,91,69,.14);
+    padding: 32px 40px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .apercu-r-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(14,91,69,.12);
+  }
+  .apercu-r-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+  }
+  .apercu-r-period {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: .04em;
+  }
+
+  .apercu-timeline {
+    position: relative;
+    height: 92px;
+    margin: 36px 6px 28px;
+  }
+  .t-track {
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    border-top: 1px dashed rgba(14,91,69,.28);
+  }
+  .t-today {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    width: 1px;
+    background: var(--green-deep);
+  }
+  .t-today-label {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green-deep);
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background: var(--white);
+    padding: 3px 8px;
+    border-radius: var(--r-sm);
+    border: 1px solid rgba(14,91,69,.20);
+  }
+
+  .t-marker {
+    position: absolute;
+    top: 50%;
+    width: 0;
+    height: 0;
+  }
+  .t-marker .dot {
+    display: block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 2.5px solid var(--white);
+    box-shadow: 0 0 0 1.5px rgba(14,91,69,.20);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .t-marker.due .dot { background: var(--status-due); }
+  .t-marker.over .dot { background: var(--status-over); }
+  .t-marker.up .dot { background: var(--status-up); }
+
+  .t-marker .top,
+  .t-marker .bot {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-family: var(--mono);
+    letter-spacing: .04em;
+  }
+  .t-marker .top {
+    top: -28px;
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .t-marker .bot {
+    top: 18px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-size: 9.5px;
+  }
+  .t-marker.over .top { color: var(--status-over); }
+  .t-marker.due .top { color: var(--ink); }
+
+  /* ---- Section header ---- */
+  .section-head {
+    display: flex; align-items: end; justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 14px;
+  }
+  .section-head .title { display: flex; align-items: baseline; gap: 14px; }
+  .section-head h2 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -.015em;
+  }
+  .section-head .count-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    background: var(--paper);
+    padding: 3px 8px;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--line);
+  }
+  .section-head .link {
+    font-size: 13px;
+    color: var(--green-deep);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .section-head .link:hover { text-decoration: underline; }
+
+  section.block { margin-bottom: 64px; }
+
+  /* ---- Animals grid ---- */
+  .animals-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .animal-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 0;
+    transition: border-color .12s, box-shadow .12s;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .animal-card:hover {
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-md);
+  }
+  .animal-card .header {
+    padding: 20px 22px 16px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px;
+  }
+  .animal-card .identity {
+    display: flex; align-items: center; gap: 14px; min-width: 0;
+  }
+  .animal-card .portrait {
+    width: 44px; height: 44px;
+    border-radius: var(--r-sm);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: .04em;
+  }
+  .animal-card .portrait svg { width: 22px; height: 22px; color: var(--green-deep); }
+  .animal-card .name-block { min-width: 0; }
+  .animal-card .name {
+    font-size: 16px; font-weight: 600;
+    letter-spacing: -.015em;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .animal-card .species-line {
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .animal-card .species-line .dot { margin: 0 5px; opacity: .55; }
+
+  .animal-card .body {
+    border-top: 1px solid var(--line);
+    padding: 16px 22px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 24px;
+  }
+  .animal-card .stat .stat-label {
+    font-family: var(--mono);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+  }
+  .animal-card .stat .stat-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .animal-card .stat .stat-value.muted { color: var(--ink-soft); }
+
+  .animal-card .footer {
+    border-top: 1px solid var(--line);
+    padding: 12px 22px;
+    background: var(--paper);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .animal-card .footer .next {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .animal-card .footer .next strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .animal-card .footer .arrow {
+    color: var(--ink-soft);
+    transition: transform .12s, color .12s;
+  }
+  .animal-card:hover .footer .arrow {
+    color: var(--green-deep);
+    transform: translateX(2px);
+  }
+
+  /* Pills */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: var(--r-sm);
+    font-family: var(--mono); font-size: 11px; font-weight: 500;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  .pill::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+  }
+  .pill.up { background: var(--status-up-tint); color: var(--status-up); }
+  .pill.due { background: var(--status-due-tint); color: var(--status-due); }
+  .pill.over { background: var(--status-over-tint); color: var(--status-over); }
+
+  /* ---- Schedule table ---- */
+  .schedule {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .schedule-head {
+    display: grid;
+    grid-template-columns: 36px 1.6fr 1.4fr 1fr 130px 60px;
+    align-items: center;
+    padding: 14px 22px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 10px; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .schedule-row {
+    display: grid;
+    grid-template-columns: 36px 1.6fr 1.4fr 1fr 130px 60px;
+    align-items: center;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--line);
+    transition: background .12s;
+    cursor: pointer;
+  }
+  .schedule-row:last-child { border-bottom: 0; }
+  .schedule-row:hover { background: var(--paper); }
+
+  .schedule-row .marker {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink-soft);
+  }
+  .schedule-row.over .marker { background: var(--status-over); }
+  .schedule-row.due .marker { background: var(--status-due); }
+  .schedule-row.up .marker { background: var(--status-up); }
+
+  .schedule-row .protocol {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .schedule-row .protocol .rule-id {
+    display: block;
+    margin-top: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    letter-spacing: .04em;
+  }
+  .schedule-row .animal {
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .schedule-row .animal .species {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .schedule-row .date-cell {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .schedule-row .date-cell .day-count {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .schedule-row .date-cell .day-count.over { color: var(--status-over); }
+  .schedule-row .date-cell .day-count.due { color: var(--status-due); }
+
+  .schedule-row .pill-cell { justify-self: start; }
+  .schedule-row .row-arrow {
+    color: var(--line-strong);
+    justify-self: end;
+    transition: color .12s, transform .12s;
+  }
+  .schedule-row:hover .row-arrow {
+    color: var(--green-deep);
+    transform: translateX(2px);
+  }
+
+  .schedule-foot {
+    padding: 14px 22px;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .schedule-foot a {
+    color: var(--green-deep);
+    text-decoration: none;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+  .schedule-foot a:hover { text-decoration: underline; }
+
+  /* ---- Footnote ---- */
+  .footnote {
+    margin-top: 32px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    text-align: center;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* ==================== Responsive ==================== */
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    aside.sidebar {
+      position: static;
+      height: auto;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .sidebar nav { flex-direction: row; flex-wrap: wrap; }
+    .sidebar nav .nav-section-label { display: none; }
+    main.canvas { padding: 0 24px 60px; }
+    .animals-grid { grid-template-columns: 1fr; }
+    .apercu-card { padding: 26px 22px 22px; }
+    .apercu-r-head { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .apercu-timeline { margin: 32px 4px 24px; height: 80px; }
+    .t-marker .top { font-size: 10px; top: -24px; }
+    .t-marker .bot { font-size: 9px; top: 16px; }
+    .schedule-head, .schedule-row {
+      grid-template-columns: 24px 1.4fr 1fr 110px 90px;
+    }
+    .schedule-head .col-due,
+    .schedule-row .row-arrow { display: none; }
+  }
+  @media (max-width: 600px) {
+    .page-head { grid-template-columns: 1fr; }
+    .page-head .timestamp { text-align: left; }
+    .schedule-head, .schedule-row { grid-template-columns: 16px 1fr 100px; }
+    .schedule-head .col-animal,
+    .schedule-row .animal,
+    .schedule-head .col-date,
+    .schedule-row .date-cell { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ==================== Sidebar ==================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <a href="#" class="lockup" style="text-decoration: none;">
+        <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-label="Mélampus">
+          <rect x="0" y="0" width="64" height="64" rx="14" ry="14" fill="#0E5B45"/>
+          <path d="M8 42 L22 42 L26 18 L32 42 L38 18 L42 42 L56 42"
+                fill="none" stroke="#FAFAF7" stroke-width="3"
+                stroke-linecap="square" stroke-linejoin="miter"/>
+        </svg>
+        <span class="wordmark">mélampus</span>
+      </a>
+      <div class="tag">Carnet de santé · v1.0</div>
+    </div>
+
+    <nav>
+      <div class="nav-section-label">Espace</div>
+      <a href="#" class="nav-link is-active">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          Vue d'ensemble
+        </span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"></path>
+          </svg>
+          Mes animaux
+        </span>
+        <span class="count">04</span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Vaccinations
+        </span>
+        <span class="count">12</span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <polyline points="12 7 12 12 15 14"></polyline>
+          </svg>
+          Soins récurrents
+        </span>
+        <span class="count">07</span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+          </svg>
+          Alertes
+        </span>
+        <span class="count alert">03</span>
+      </a>
+
+      <div class="nav-section-label" style="margin-top: 18px;">Compte</div>
+      <a href="#" class="nav-link">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="9" y1="13" x2="15" y2="13"></line>
+            <line x1="9" y1="17" x2="13" y2="17"></line>
+          </svg>
+          Export PDF
+        </span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="left">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.06a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.06a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          Paramètres
+        </span>
+      </a>
+    </nav>
+
+    <div class="footer">
+      <div class="user-card">
+        <span class="avatar">MG</span>
+        <div class="user-meta">
+          <div class="name">Marion Gobin</div>
+          <div class="email">marion.gobin31@gmail.com</div>
+        </div>
+      </div>
+      <button class="signout" type="button">Se déconnecter</button>
+    </div>
+  </aside>
+
+  <!-- ==================== Main canvas ==================== -->
+  <main class="canvas">
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="crumbs">
+        <span>Espace</span>
+        <span class="sep">/</span>
+        <strong>Vue d'ensemble</strong>
+      </div>
+      <div class="actions">
+        <button class="icon-btn" type="button" aria-label="Recherche">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Alertes">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+          </svg>
+          <span class="badge">3</span>
+        </button>
+        <button class="btn btn-secondary" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+          Exporter le carnet
+        </button>
+        <button class="btn btn-primary" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Ajouter un animal
+        </button>
+      </div>
+    </div>
+
+    <!-- Page head -->
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Vue d'ensemble · 4 animaux suivis</span>
+        <h1>Bonjour Marion.</h1>
+        <p class="lede">
+          Voici l'essentiel pour cette semaine. Vous pouvez tout exporter
+          en PDF si votre vétérinaire le demande.
+        </p>
+      </div>
+      <div class="timestamp">
+        <strong>Dimanche 10 mai 2026</strong>
+        Dernière synchro · 09:41
+      </div>
+    </div>
+
+    <!-- ============== Chronologie clinique ============== -->
+    <section class="apercu" aria-label="Chronologie clinique">
+      <div class="apercu-card">
+        <div class="apercu-r-head">
+          <span class="apercu-r-eyebrow">Chronologie clinique</span>
+          <span class="apercu-r-period">26 avril → 09 juin · 44 jours</span>
+        </div>
+
+        <div class="apercu-timeline" role="img" aria-label="Frise des échéances">
+          <div class="t-track"></div>
+
+          <!-- Today (2026-05-10) -->
+          <div class="t-today" style="left: 31.8%;">
+            <span class="t-today-label">Aujourd'hui · 10 mai</span>
+          </div>
+
+          <!-- Houba · Rage · 28 avril (− 12 j) -->
+          <div class="t-marker over" style="left: 4.5%;">
+            <span class="top">Rage</span>
+            <span class="dot"></span>
+            <span class="bot">Houba · −12 j</span>
+          </div>
+
+          <!-- Tornado · Vermifugation · 14 mai (+4 j) -->
+          <div class="t-marker due" style="left: 40.9%;">
+            <span class="top">Vermifugation</span>
+            <span class="dot"></span>
+            <span class="bot">Tornado · 14 mai</span>
+          </div>
+
+          <!-- Tornado · Grippe + Tétanos · 28 mai (+18 j) -->
+          <div class="t-marker due" style="left: 72.7%;">
+            <span class="top">Grippe-Tétanos</span>
+            <span class="dot"></span>
+            <span class="bot">Tornado · 28 mai</span>
+          </div>
+
+          <!-- Pixel · Leucose · 06 juin (+27 j) -->
+          <div class="t-marker due" style="left: 93.2%;">
+            <span class="top">Leucose</span>
+            <span class="dot"></span>
+            <span class="bot">Pixel · 06 juin</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== Échéances à venir ============== -->
+    <section class="block">
+      <div class="section-head">
+        <div class="title">
+          <h2>Échéances à venir</h2>
+          <span class="count-badge">04 protocoles · 30 j</span>
+        </div>
+        <a class="link" href="#">Tout le calendrier →</a>
+      </div>
+
+      <div class="schedule">
+        <div class="schedule-head">
+          <span></span>
+          <span class="col-protocol">Protocole</span>
+          <span class="col-animal">Animal</span>
+          <span class="col-due">Statut</span>
+          <span class="col-date">Échéance</span>
+          <span></span>
+        </div>
+
+        <!-- Row · OVER -->
+        <div class="schedule-row over">
+          <span class="marker"></span>
+          <div class="protocol">
+            Rage · CHPPiL+R
+            <span class="rule-id">VAC.CANINE.RAGE_2025_REV02</span>
+          </div>
+          <div class="animal">
+            Houba
+            <span class="species">Canin · Border collie</span>
+          </div>
+          <div class="pill-cell"><span class="pill over">En retard</span></div>
+          <div class="date-cell">
+            28 / 04 / 2026
+            <span class="day-count over">— 12 jours</span>
+          </div>
+          <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </div>
+
+        <!-- Row · DUE soon -->
+        <div class="schedule-row due">
+          <span class="marker"></span>
+          <div class="protocol">
+            Vermifugation
+            <span class="rule-id">CARE.EQUINE.VERMIFUGE_Q90</span>
+          </div>
+          <div class="animal">
+            Tornado
+            <span class="species">Équin · Hongre</span>
+          </div>
+          <div class="pill-cell"><span class="pill due">Dans 4 j</span></div>
+          <div class="date-cell">
+            14 / 05 / 2026
+            <span class="day-count due">+ 4 jours</span>
+          </div>
+          <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </div>
+
+        <!-- Row · DUE -->
+        <div class="schedule-row due">
+          <span class="marker"></span>
+          <div class="protocol">
+            Grippe + Tétanos
+            <span class="rule-id">VAC.EQUINE.GRIPPE_TETANOS</span>
+          </div>
+          <div class="animal">
+            Tornado
+            <span class="species">Équin · Hongre</span>
+          </div>
+          <div class="pill-cell"><span class="pill due">Dans 18 j</span></div>
+          <div class="date-cell">
+            28 / 05 / 2026
+            <span class="day-count due">+ 18 jours</span>
+          </div>
+          <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </div>
+
+        <!-- Row · DUE -->
+        <div class="schedule-row due">
+          <span class="marker"></span>
+          <div class="protocol">
+            Leucose féline
+            <span class="rule-id">VAC.FELINE.LEUC_2025</span>
+          </div>
+          <div class="animal">
+            Pixel
+            <span class="species">Félin · Persan</span>
+          </div>
+          <div class="pill-cell"><span class="pill due">Dans 27 j</span></div>
+          <div class="date-cell">
+            06 / 06 / 2026
+            <span class="day-count due">+ 27 jours</span>
+          </div>
+          <svg class="row-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </div>
+
+        <div class="schedule-foot">
+          <span>Fenêtre · 30 jours · 04 protocoles</span>
+          <a href="#">Ouvrir le calendrier complet</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== Mes animaux ============== -->
+    <section class="block">
+      <div class="section-head">
+        <div class="title">
+          <h2>Mes animaux</h2>
+          <span class="count-badge">04 dossiers</span>
+        </div>
+        <a class="link" href="#">Voir tous les animaux →</a>
+      </div>
+
+      <div class="animals-grid">
+
+        <!-- Animal 1 — Tornado · équin · DUE -->
+        <article class="animal-card">
+          <div class="header">
+            <div class="identity">
+              <div class="portrait">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 16c0-3 2-5 5-5h2c2 0 4 2 4 4v0a3 3 0 0 1-3 3H8"></path>
+                  <path d="M19 7l-2 2-2-2-1 2 2 4"></path>
+                  <path d="M14 13l-1 5"></path>
+                  <path d="M10 18v3"></path>
+                  <path d="M5 16l-2 2"></path>
+                </svg>
+              </div>
+              <div class="name-block">
+                <div class="name">Tornado</div>
+                <div class="species-line">Équin <span class="dot">·</span> 11 ans <span class="dot">·</span> Hongre</div>
+              </div>
+            </div>
+            <span class="pill due">Dû dans 4 j</span>
+          </div>
+          <div class="body">
+            <div class="stat">
+              <div class="stat-label">Dernière administration</div>
+              <div class="stat-value">14 / 02 / 2026</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Prochaine échéance</div>
+              <div class="stat-value">14 / 05 / 2026</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Protocoles actifs</div>
+              <div class="stat-value">04</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Département</div>
+              <div class="stat-value muted">31 — Haute-Garonne</div>
+            </div>
+          </div>
+          <div class="footer">
+            <div class="next">Suivant <strong>· Vermifugation</strong></div>
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </article>
+
+        <!-- Animal 2 — Houba · canin · OVER -->
+        <article class="animal-card">
+          <div class="header">
+            <div class="identity">
+              <div class="portrait">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 5l-2 4 4 1 4-1-2-4"></path>
+                  <path d="M5 10c-1 1-2 3-2 5 0 3 2 5 5 5h8c3 0 5-2 5-5 0-2-1-4-2-5"></path>
+                  <circle cx="9" cy="14" r=".7" fill="currentColor"></circle>
+                  <circle cx="15" cy="14" r=".7" fill="currentColor"></circle>
+                  <path d="M11 17h2"></path>
+                </svg>
+              </div>
+              <div class="name-block">
+                <div class="name">Houba</div>
+                <div class="species-line">Canin <span class="dot">·</span> 7 ans <span class="dot">·</span> Border collie</div>
+              </div>
+            </div>
+            <span class="pill over">En retard 12 j</span>
+          </div>
+          <div class="body">
+            <div class="stat">
+              <div class="stat-label">Dernière administration</div>
+              <div class="stat-value">28 / 04 / 2025</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Échéance dépassée</div>
+              <div class="stat-value">28 / 04 / 2026</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Protocoles actifs</div>
+              <div class="stat-value">03</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Département</div>
+              <div class="stat-value muted">31 — Haute-Garonne</div>
+            </div>
+          </div>
+          <div class="footer">
+            <div class="next">À traiter <strong>· Rage (CHPPiL+R)</strong></div>
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </article>
+
+        <!-- Animal 3 — Filou · félin · UP -->
+        <article class="animal-card">
+          <div class="header">
+            <div class="identity">
+              <div class="portrait">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 4l3 5"></path>
+                  <path d="M19 4l-3 5"></path>
+                  <path d="M5 9c-1 1-1.5 3-1.5 5 0 3 2.5 6 8.5 6s8.5-3 8.5-6c0-2-.5-4-1.5-5"></path>
+                  <circle cx="9.5" cy="13" r=".7" fill="currentColor"></circle>
+                  <circle cx="14.5" cy="13" r=".7" fill="currentColor"></circle>
+                  <path d="M11 16h2"></path>
+                </svg>
+              </div>
+              <div class="name-block">
+                <div class="name">Filou</div>
+                <div class="species-line">Félin <span class="dot">·</span> 4 ans <span class="dot">·</span> Européen</div>
+              </div>
+            </div>
+            <span class="pill up">À jour</span>
+          </div>
+          <div class="body">
+            <div class="stat">
+              <div class="stat-label">Dernière administration</div>
+              <div class="stat-value">02 / 03 / 2026</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Prochaine échéance</div>
+              <div class="stat-value muted">02 / 03 / 2027</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Protocoles actifs</div>
+              <div class="stat-value">03</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Département</div>
+              <div class="stat-value muted">31 — Haute-Garonne</div>
+            </div>
+          </div>
+          <div class="footer">
+            <div class="next">Aucune action requise</div>
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </article>
+
+        <!-- Animal 4 — Pixel · félin · UP -->
+        <article class="animal-card">
+          <div class="header">
+            <div class="identity">
+              <div class="portrait">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 4l3 5"></path>
+                  <path d="M19 4l-3 5"></path>
+                  <path d="M5 9c-1 1-1.5 3-1.5 5 0 3 2.5 6 8.5 6s8.5-3 8.5-6c0-2-.5-4-1.5-5"></path>
+                  <circle cx="9.5" cy="13" r=".7" fill="currentColor"></circle>
+                  <circle cx="14.5" cy="13" r=".7" fill="currentColor"></circle>
+                  <path d="M11 16h2"></path>
+                </svg>
+              </div>
+              <div class="name-block">
+                <div class="name">Pixel</div>
+                <div class="species-line">Félin <span class="dot">·</span> 9 ans <span class="dot">·</span> Persan</div>
+              </div>
+            </div>
+            <span class="pill up">À jour</span>
+          </div>
+          <div class="body">
+            <div class="stat">
+              <div class="stat-label">Dernière administration</div>
+              <div class="stat-value">17 / 04 / 2026</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Prochaine échéance</div>
+              <div class="stat-value">06 / 06 / 2026</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Protocoles actifs</div>
+              <div class="stat-value">02</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Département</div>
+              <div class="stat-value muted">31 — Haute-Garonne</div>
+            </div>
+          </div>
+          <div class="footer">
+            <div class="next">Suivant <strong>· Leucose féline</strong></div>
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <div class="footnote">
+      Mélampus · Identité v1.0 · Dashboard utilisateur — Maquette · Mai 2026 · HDS · RGPD · Données chiffrées
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>
