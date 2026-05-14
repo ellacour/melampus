@@ -3,6 +3,9 @@ import { useAuthStore } from './store/authStore'
 import { LoginPage } from './pages/auth/LoginPage'
 import { RegisterPage } from './pages/auth/RegisterPage'
 import { AnimalsPage } from './pages/animals/AnimalsPage'
+import { AnimalDetailPage } from './pages/animals/AnimalDetailPage'
+import { CreateAnimalPage } from './pages/animals/CreateAnimalPage'
+import { DashboardHomePage } from './pages/dashboard/DashboardHomePage'
 import { DashboardLayout } from './components/layout/DashboardLayout'
 import { DesignSystemPage } from './pages/design-system/DesignSystemPage'
 
@@ -30,8 +33,11 @@ export default function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/animals" replace />} />
+        {/* Vue d'ensemble — chronologie + échéances + mes animaux */}
+        <Route index element={<DashboardHomePage />} />
         <Route path="animals" element={<AnimalsPage />} />
+        <Route path="animals/new" element={<CreateAnimalPage />} />
+        <Route path="animals/:id" element={<AnimalDetailPage />} />
         {/* More routes to be added: /care, /vaccinations, /notifications */}
       </Route>
 
