@@ -5,6 +5,7 @@ import { RegisterPage } from './pages/auth/RegisterPage'
 import { AnimalsPage } from './pages/animals/AnimalsPage'
 import { AnimalDetailPage } from './pages/animals/AnimalDetailPage'
 import { CreateAnimalPage } from './pages/animals/CreateAnimalPage'
+import { EditAnimalPage } from './pages/animals/EditAnimalPage'
 import { DashboardHomePage } from './pages/dashboard/DashboardHomePage'
 import { DashboardLayout } from './components/layout/DashboardLayout'
 import { DesignSystemPage } from './pages/design-system/DesignSystemPage'
@@ -38,6 +39,7 @@ export default function App() {
         <Route path="animals" element={<AnimalsPage />} />
         <Route path="animals/new" element={<CreateAnimalPage />} />
         <Route path="animals/:id" element={<AnimalDetailPage />} />
+        <Route path="animals/:id/edit" element={<EditAnimalPage />} />
         {/* More routes to be added: /care, /vaccinations, /notifications */}
       </Route>
 

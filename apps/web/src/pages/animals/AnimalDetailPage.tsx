@@ -17,7 +17,7 @@
  *  - dossier peuplé
  */
 import { ReactNode, useMemo } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import type {
   Animal,
   RecurringCare,
@@ -129,6 +129,7 @@ function DetailHero({
   animal: Animal
   summary: AnimalSummary
 }) {
+  const navigate = useNavigate()
   const { status, nextEvent } = summary
   const days = nextEvent?.daysFromToday ?? 0
   const pillLabel = nextEvent ? formatPillLabel(status, days) : 'À jour'
@@ -174,7 +175,11 @@ function DetailHero({
           </svg>
           Exporter PDF
         </button>
-        <button type="button" className="btn-secondary">
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={() => navigate(`/animals/${animal.id}/edit`)}
+        >
           <svg
             width="14"
             height="14"
