@@ -299,13 +299,13 @@ export function formatPillLabel(status: EventStatus, days: number): string {
 // Species portraits — used by AnimalCard.tsx
 // ---------------------------------------------------------------------------
 
-/** Sous-groupe de Species avec une silhouette dessinée. Les autres tombent
- * sur l'icône generic. */
-export type PortraitKind = 'equine' | 'canine' | 'feline' | 'generic'
+/**
+ * Toutes les espèces ont maintenant un portrait dédié dans Icons.tsx.
+ * `portraitFor` reste exporté pour compatibilité, mais AnimalCard passe
+ * directement la `species` à <AnimalPortrait />.
+ */
+export type PortraitKind = Species | 'generic'
 
 export function portraitFor(species: Species): PortraitKind {
-  if (species === 'equine') return 'equine'
-  if (species === 'canine') return 'canine'
-  if (species === 'feline') return 'feline'
-  return 'generic'
+  return species
 }

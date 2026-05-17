@@ -558,7 +558,7 @@ function FieldRow({ children }: { children: ReactNode }) {
   return <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{children}</div>
 }
 
-function Field({ label, help, error, required, children }: { label: string; help?: string; error?: string; required?: boolean; children: ReactNode }) {
+function Field({ label, help, error, required, children }: { label: string; help?: string; error?: string | undefined; required?: boolean; children: ReactNode }) {
   return (
     <div>
       <label className="label flex items-center justify-between mb-1.5">
